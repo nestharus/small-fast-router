@@ -1,0 +1,40 @@
+plugins {
+    id 'buildlogic.java-library-conventions'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['--add-modules', 'jdk.incubator.vector']
+}
+
+tasks.withType(Test) {
+    jvmArgs += ['--add-modules', 'jdk.incubator.vector']
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += ['--add-modules', 'jdk.incubator.vector']
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/main/gen']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java', 'src/main/gen']
+        }
+    }
+}
+
+dependencies {
+    implementation group: 'org.antlr', name: 'antlr4-runtime', version: '4.13.2'
+    implementation group: 'io.vertx', name: 'vertx-core', version: '5.0.0.CR2'
+    implementation group: 'io.vertx', name: 'vertx-web', version: '5.0.0.CR2'
+    implementation group: 'io.vertx', name: 'vertx-codegen', version: '5.0.0.CR2'
+    implementation group: 'com.google.dagger', name: 'dagger', version: '2.52'
+    implementation group: 'io.netty', name: 'netty-all', version: '4.1.115.Final'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.16'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.16'
+    testImplementation group: 'io.vertx', name: 'vertx-unit', version: '5.0.0.CR2'
+}
