@@ -28,16 +28,6 @@ public interface RouteParserListener extends ParseTreeListener {
 	 */
 	void exitUrl(RouteParser.UrlContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RouteParser#segments}.
-	 * @param ctx the parse tree
-	 */
-	void enterSegments(RouteParser.SegmentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RouteParser#segments}.
-	 * @param ctx the parse tree
-	 */
-	void exitSegments(RouteParser.SegmentsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link RouteParser#segment}.
 	 * @param ctx the parse tree
 	 */
@@ -57,16 +47,6 @@ public interface RouteParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitWildcard_segment(RouteParser.Wildcard_segmentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RouteParser#wildcard}.
-	 * @param ctx the parse tree
-	 */
-	void enterWildcard(RouteParser.WildcardContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RouteParser#wildcard}.
-	 * @param ctx the parse tree
-	 */
-	void exitWildcard(RouteParser.WildcardContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RouteParser#glob_segment}.
 	 * @param ctx the parse tree

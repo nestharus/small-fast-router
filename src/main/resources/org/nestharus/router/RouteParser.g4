@@ -4,16 +4,14 @@ options {
     tokenVocab = RouteLexer;
 }
 
-main: url EOF;
+main
+    : url EOF
+    ;
 
 url
     : SLASH
-    | segment? segments (SLASH glob_segment)? segments SLASH?
-    | glob_segment segments SLASH?
-    ;
-
-segments
-    : (SLASH segment)*
+    | segment? (SLASH segment)* (SLASH glob_segment)? (SLASH segment)* SLASH?
+    | glob_segment (SLASH segment)* SLASH?
     ;
 
 segment
@@ -22,11 +20,7 @@ segment
     ;
 
 wildcard_segment
-    : STATIC_TEXT? wildcard STATIC_TEXT?
-    ;
-
-wildcard
-    : WILDCARD varname?
+    : STATIC_TEXT? WILDCARD varname? STATIC_TEXT?
     ;
 
 glob_segment

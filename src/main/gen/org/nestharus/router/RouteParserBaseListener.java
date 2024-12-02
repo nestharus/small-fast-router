@@ -41,18 +41,6 @@ public class RouteParserBaseListener implements RouteParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSegments(RouteParser.SegmentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSegments(RouteParser.SegmentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterSegment(RouteParser.SegmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -72,18 +60,6 @@ public class RouteParserBaseListener implements RouteParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitWildcard_segment(RouteParser.Wildcard_segmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterWildcard(RouteParser.WildcardContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitWildcard(RouteParser.WildcardContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
