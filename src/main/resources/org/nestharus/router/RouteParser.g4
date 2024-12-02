@@ -19,9 +19,7 @@ segment
     ;
 
 wildcard_segment
-    : wildcard
-    | STATIC_TEXT wildcard
-    | wildcard STATIC_TEXT
+    : STATIC_TEXT? wildcard STATIC_TEXT?
     ;
 
 wildcard
