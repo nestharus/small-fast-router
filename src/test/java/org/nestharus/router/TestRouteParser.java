@@ -2,7 +2,6 @@ package org.nestharus.router;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -47,6 +46,7 @@ public class TestRouteParser {
 		"/static/path/segment",
 		"static/path/segment",
 		"/path/*",
+		"/path/*?",
 		"/path/*{varname}",
 		"/path/**",
 		"**/hello",
@@ -56,9 +56,11 @@ public class TestRouteParser {
 		"/path/**{varname}[*{foo}, *{bar}, *]",
 		"/path/static*",
 		"/path/*static",
+		"/path/*?static",
 		"/path/static*static",
 		"/path/**[*, *, *]",
-		"/path/**[*{foo}, *{bar}, *]"
+		"/path/**[*{foo}, *{bar}, *]",
+		"/path/**[*{foo}, *{bar}?, *?]",
 	})
 	public void testValid(final String input) {
 		final var errors = parseInput(input);
@@ -75,7 +77,10 @@ public class TestRouteParser {
 		"/path/**[*{foo}, *{bar},]",
 		"**/hi/**",
 		"/a/**/hi/**",
-		"//"
+		"//",
+		"/?",
+		"/**?",
+		"/*??"
 	})
 	public void testInvalid(final String input) {
 		final var errors = parseInput(input);

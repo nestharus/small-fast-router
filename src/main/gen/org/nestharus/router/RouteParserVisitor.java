@@ -47,6 +47,24 @@ public interface RouteParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarname(RouteParser.VarnameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RouteParser#wildcard}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWildcard(RouteParser.WildcardContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RouteParser#unnamed_wildcard}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnnamed_wildcard(RouteParser.Unnamed_wildcardContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RouteParser#named_wildcard}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNamed_wildcard(RouteParser.Named_wildcardContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RouteParser#varname_group}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

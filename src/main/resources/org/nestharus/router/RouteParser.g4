@@ -20,7 +20,7 @@ segment
     ;
 
 wildcard_segment
-    : STATIC_TEXT? WILDCARD varname? STATIC_TEXT?
+    : STATIC_TEXT? wildcard STATIC_TEXT?
     ;
 
 glob_segment
@@ -31,11 +31,23 @@ varname
     : LBRACE IDENTIFIER RBRACE
     ;
 
+wildcard
+    : WILDCARD varname? OPTIONAL?
+    ;
+
+unnamed_wildcard
+    : WILDCARD OPTIONAL?
+    ;
+
+named_wildcard
+    : WILDCARD varname OPTIONAL?
+    ;
+
 varname_group
     : LBRACKET var_list RBRACKET
     ;
 
 var_list
-    : WILDCARD (COMMA WILDCARD)*
-    | WILDCARD varname (COMMA WILDCARD varname)* (COMMA WILDCARD)*
+    : unnamed_wildcard (COMMA unnamed_wildcard)*
+    | named_wildcard (COMMA named_wildcard)* (COMMA unnamed_wildcard)*
     ;
