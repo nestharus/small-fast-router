@@ -107,24 +107,4 @@ public interface RouteParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVar_list(RouteParser.Var_listContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RouteParser#identifier_list}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdentifier_list(RouteParser.Identifier_listContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RouteParser#identifier_list}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentifier_list(RouteParser.Identifier_listContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RouteParser#wildcard_list}.
-	 * @param ctx the parse tree
-	 */
-	void enterWildcard_list(RouteParser.Wildcard_listContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RouteParser#wildcard_list}.
-	 * @param ctx the parse tree
-	 */
-	void exitWildcard_list(RouteParser.Wildcard_listContext ctx);
 }

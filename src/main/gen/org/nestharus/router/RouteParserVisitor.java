@@ -70,16 +70,4 @@ public interface RouteParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVar_list(RouteParser.Var_listContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RouteParser#identifier_list}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdentifier_list(RouteParser.Identifier_listContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RouteParser#wildcard_list}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWildcard_list(RouteParser.Wildcard_listContext ctx);
 }

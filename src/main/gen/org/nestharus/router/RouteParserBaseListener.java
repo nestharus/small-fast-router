@@ -132,30 +132,6 @@ public class RouteParserBaseListener implements RouteParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVar_list(RouteParser.Var_listContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIdentifier_list(RouteParser.Identifier_listContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdentifier_list(RouteParser.Identifier_listContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterWildcard_list(RouteParser.Wildcard_listContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitWildcard_list(RouteParser.Wildcard_listContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -30,10 +30,7 @@ wildcard
     ;
 
 glob_segment
-    : GLOB
-    | GLOB varname
-    | GLOB varname_group
-    | GLOB varname varname_group
+    : GLOB varname? varname_group?
     ;
 
 varname
@@ -45,13 +42,6 @@ varname_group
     ;
 
 var_list
-    : wildcard_list
-    | identifier_list (COMMA wildcard_list)?
+    : WILDCARD (COMMA WILDCARD)*
+    | WILDCARD varname (COMMA WILDCARD varname)* (COMMA WILDCARD)*
     ;
-
-identifier_list
-    : IDENTIFIER (COMMA IDENTIFIER)*
-    ;
-
-wildcard_list
-    : WILDCARD (COMMA WILDCARD)*;

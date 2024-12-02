@@ -30,4 +30,5 @@ mode LIST_MODE;
     LIST_COMMA: ',' -> type(COMMA);         // Map to COMMA
     LIST_WILDCARD: '*' -> type(WILDCARD);   // Map to WILDCARD
     LIST_WS: [ \t\r\n]+ -> skip;            // Skip whitespace in LIST_MODE
+    LIST_LBRACE: '{' -> pushMode(VARNAME_MODE), type(LBRACE);
     RBRACKET: ']' -> popMode;               // Exit LIST_MODE on `]`
