@@ -39,8 +39,22 @@ public class TestRouteParser {
 	}
 
 	@Test
+	public void testValidSlash() {
+		final var input = "/";
+		final var errors = parseInput(input);
+		assertEquals(errors.getErrors(), Collections.emptyList());
+	}
+
+	@Test
 	public void testValidStaticPath() {
 		final var input = "/static/path/segment";
+		final var errors = parseInput(input);
+		assertEquals(errors.getErrors(), Collections.emptyList());
+	}
+
+	@Test
+	public void testValidStaticPathNoSlash() {
+		final var input = "static/path/segment";
 		final var errors = parseInput(input);
 		assertEquals(errors.getErrors(), Collections.emptyList());
 	}
@@ -60,8 +74,29 @@ public class TestRouteParser {
 	}
 
 	@Test
-	public void testValidGlob() {
+	public void testValidEndGlob() {
 		final var input = "/path/**";
+		final var errors = parseInput(input);
+		assertEquals(errors.getErrors(), Collections.emptyList());
+	}
+
+	@Test
+	public void testValidStartGlob() {
+		final var input = "**/hello";
+		final var errors = parseInput(input);
+		assertEquals(errors.getErrors(), Collections.emptyList());
+	}
+
+	@Test
+	public void testValidStartGlobSlash() {
+		final var input = "/**/hello";
+		final var errors = parseInput(input);
+		assertEquals(errors.getErrors(), Collections.emptyList());
+	}
+
+	@Test
+	public void testValidMiddleGlob() {
+		final var input = "hello/**/hello";
 		final var errors = parseInput(input);
 		assertEquals(errors.getErrors(), Collections.emptyList());
 	}
@@ -90,6 +125,13 @@ public class TestRouteParser {
 	@Test
 	public void testValidWildcardFollowedByStaticText() {
 		final var input = "/path/*static";
+		final var errors = parseInput(input);
+		assertEquals(errors.getErrors(), Collections.emptyList());
+	}
+
+	@Test
+	public void testValidWildcardInStaticText() {
+		final var input = "/path/static*static";
 		final var errors = parseInput(input);
 		assertEquals(errors.getErrors(), Collections.emptyList());
 	}
@@ -171,8 +213,16 @@ public class TestRouteParser {
 	}
 
 	@Test
-	public void testInvalidStaticWildcardMixed() {
-		final var input = "/path/static*foo";
+	public void testInvalidMultiGlobStart() {
+		final var input = "**/hi/**";
+		final var errors = parseInput(input);
+		assertNotEquals(errors.getErrors(), Collections.emptyList());
+		assertEquals(1, errors.getErrors().size());
+	}
+
+	@Test
+	public void testInvalidMultiGlobMiddle() {
+		final var input = "/a/**/hi/**";
 		final var errors = parseInput(input);
 		assertNotEquals(errors.getErrors(), Collections.emptyList());
 		assertEquals(1, errors.getErrors().size());
