@@ -23,6 +23,12 @@ public interface RouteParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUrl(RouteParser.UrlContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RouteParser#segments}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSegments(RouteParser.SegmentsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RouteParser#segment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

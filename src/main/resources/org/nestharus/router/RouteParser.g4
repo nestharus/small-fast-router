@@ -8,13 +8,16 @@ main: url EOF;
 
 url
     : SLASH
-    | (SLASH segment)+ SLASH?
-    | segment (SLASH segment)* SLASH?
+    | segment? segments (SLASH glob_segment)? segments SLASH?
+    | glob_segment segments SLASH?
+    ;
+
+segments
+    : (SLASH segment)*
     ;
 
 segment
     : wildcard_segment
-    | glob_segment
     | STATIC_TEXT
     ;
 
