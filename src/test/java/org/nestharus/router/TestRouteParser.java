@@ -61,6 +61,13 @@ public class TestRouteParser {
 		"/path/**[*, *, *]",
 		"/path/**[*{foo}, *{bar}, *]",
 		"/path/**[*{foo}, *{bar}?, *?]",
+		"/hello?",
+		"/hello?/world?",
+		"/required/optional?",
+		"/hello?*rawr?",
+		"/path?/**[*, *]",
+		"/path?/*static?",
+		"/static?*?suffix",
 	})
 	public void testValid(final String input) {
 		final var errors = parseInput(input);
@@ -80,7 +87,11 @@ public class TestRouteParser {
 		"//",
 		"/?",
 		"/**?",
-		"/*??"
+		"/*??",
+		"/?/",
+		"/hello??",
+		"/**??",
+		"/path??/**",
 	})
 	public void testInvalid(final String input) {
 		final var errors = parseInput(input);

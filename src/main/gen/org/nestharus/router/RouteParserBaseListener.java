@@ -53,6 +53,18 @@ public class RouteParserBaseListener implements RouteParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStatic_segment(RouteParser.Static_segmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatic_segment(RouteParser.Static_segmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterWildcard_segment(RouteParser.Wildcard_segmentContext ctx) { }
 	/**
 	 * {@inheritDoc}

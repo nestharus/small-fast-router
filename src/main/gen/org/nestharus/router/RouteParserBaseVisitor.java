@@ -39,6 +39,13 @@ public class RouteParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitStatic_segment(RouteParser.Static_segmentContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitWildcard_segment(RouteParser.Wildcard_segmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

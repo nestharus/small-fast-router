@@ -38,6 +38,16 @@ public interface RouteParserListener extends ParseTreeListener {
 	 */
 	void exitSegment(RouteParser.SegmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RouteParser#static_segment}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatic_segment(RouteParser.Static_segmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RouteParser#static_segment}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatic_segment(RouteParser.Static_segmentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RouteParser#wildcard_segment}.
 	 * @param ctx the parse tree
 	 */

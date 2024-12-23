@@ -16,15 +16,19 @@ url
 
 segment
     : wildcard_segment
-    | STATIC_TEXT
+    | static_segment
+    ;
+
+static_segment
+    : STATIC_TEXT OPTIONAL?
     ;
 
 wildcard_segment
-    : STATIC_TEXT? wildcard STATIC_TEXT?
+    : static_segment? wildcard static_segment?
     ;
 
 glob_segment
-    : GLOB varname? varname_group?
+    : STATIC_TEXT? GLOB varname? varname_group?
     ;
 
 varname
