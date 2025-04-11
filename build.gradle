@@ -10,23 +10,20 @@
  * For example, see utilities/build.gradle
  */
 
-// Plugins applied to the root project only
 plugins {
     id 'java-library'
+    id 'application' // Added for running the application
     id 'com.github.ben-manes.versions' version '0.52.0' // For checking dependency updates
     id 'io.freefair.lombok' version '8.13.1' // For Lombok support
     id 'com.diffplug.spotless' version '7.0.3' // For code formatting
-    // Removed IntelliJ Platform plugin as it's not needed for this project
 }
 
-// Apply common configuration scripts
 apply from: 'dependencies.gradle'
 apply from: 'plugin.java.gradle'
 apply from: 'plugin.lombok.gradle'
 apply from: 'plugin.spotless.gradle'
 apply from: 'sourcesets.gradle'
 
-// Common configurations for ALL projects (root + subprojects)
 allprojects {
     repositories {
         mavenCentral()
@@ -38,12 +35,14 @@ allprojects {
     }
 }
 
-// Note: Subproject-specific configurations are now in each subproject's build.gradle file
-// For example, see utilities/build.gradle
+mainClassName = 'org.nestharus.router.Server'
+application {
+    mainClass = 'org.nestharus.router.Server'
+}
 
-// ROOT PROJECT specific configurations (not applied to subprojects)
-// Note: Source sets are configured in sourcesets.gradle
-// Note: JVM arguments are configured in java.gradle
+run {
+    jvmArgs = ['--add-modules', 'jdk.incubator.vector', '--enable-preview', '--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+}
 
 // Main project dependencies
 dependencies {
@@ -54,16 +53,14 @@ dependencies {
     implementation libs.dagger
     implementation libs.netty
     implementation libs.slf4jApi
+    implementation libs.slf4jSimple // Changed from testImplementation to implementation for logging
     implementation libs.geldata
+    implementation libs.jsr305
+    implementation libs.guava
 
-    // Lombok is automatically added by the plugin
-    // compileOnly libs.lombok
-    // annotationProcessor libs.lombok
-
-    testImplementation libs.slf4jSimple
     testImplementation libs.vertxUnit
+    testImplementation libs.truth
 
     // Module dependencies
     implementation project(':utilities')
 }
-

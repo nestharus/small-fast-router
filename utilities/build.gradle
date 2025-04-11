@@ -2,15 +2,10 @@
  * Utilities module build file
  */
 
-// Apply plugins specific to this subproject
 apply plugin: 'java-library'
 apply plugin: 'io.freefair.lombok'
 apply plugin: 'com.diffplug.spotless'
-// Removed IntelliJ Platform plugin as it's not needed for this project
 
-// Module-specific configuration
-
-// Configure source sets
 sourceSets {
     main {
         java {
@@ -23,10 +18,13 @@ sourceSets {
         }
     }
 }
-// Python CI code is handled separately from the Java module structure
 
-// Module-specific dependencies
 dependencies {
-    // Add any utilities-specific dependencies here
     implementation libs.slf4jApi
+    implementation libs.slf4jSimple  // Added SLF4J Simple implementation for logging
+    implementation libs.jsr305
+    implementation libs.guava
+
+    testImplementation libs.junitJupiter
+    testImplementation libs.truth
 }

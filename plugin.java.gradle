@@ -10,7 +10,7 @@ allprojects {
                 languageVersion = JavaLanguageVersion.of(javaVersion)
             }
         }
-        
+
         testing {
             suites {
                 test {
@@ -18,18 +18,18 @@ allprojects {
                 }
             }
         }
-        
+
         // JVM arguments for vector API
         tasks.withType(JavaCompile) {
             options.compilerArgs += ['--add-modules', 'jdk.incubator.vector']
         }
-        
+
         tasks.withType(Test) {
-            jvmArgs += ['--add-modules', 'jdk.incubator.vector']
+            jvmArgs += ['--add-modules', 'jdk.incubator.vector', '--enable-preview', '--add-opens', 'java.base/java.lang=ALL-UNNAMED']
         }
-        
+
         tasks.withType(JavaExec) {
-            jvmArgs += ['--add-modules', 'jdk.incubator.vector']
+            jvmArgs += ['--add-modules', 'jdk.incubator.vector', '--enable-preview', '--add-opens', 'java.base/java.lang=ALL-UNNAMED']
         }
     }
 }

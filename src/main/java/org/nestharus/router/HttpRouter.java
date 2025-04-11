@@ -8,7 +8,7 @@ import io.netty.buffer.Unpooled;
 import jdk.incubator.vector.*;
 
 public class HttpRouter {
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     final var species = ByteVector.SPECIES_PREFERRED;
     final int byteVectorLength = species.length();
     final VectorMask<Byte>[] masks = (VectorMask<Byte>[]) new VectorMask[byteVectorLength];
@@ -35,46 +35,5 @@ public class HttpRouter {
     boolean areEqual =
         firstVec.lanewise(VectorOperators.XOR, secondVec).reduceLanes(VectorOperators.OR) == 0;
     System.out.println(areEqual);
-
-    // *
-    // **
-    // *{name}
-    // **{name}
-
-    // abc* // route!!!
-    // {abc}def/ // URI
-
-    // def -> 0s
-
-    // JUMP to the next segment, which is the /
-    // def/ -> /fed -> vector
-    // NODE /fe*
-    // wildcard matched specifically on "d"
-    //
-    // {/a/b/c/}**{/a/b/c/d}
-    //
-    // /a/b/c/** -> /d/c/b/a/**
-    //
-    // {/a/b/c}/g/g/a/b/c/dfdg;olidfgjhg;oies5ity;0o9 isre5 t0;'yui;09sr5tuiy ;sr5etiuyj;ose r5xtij
-    // {/d/c/b/a/}g/g
-    //
-    // masks
-    // static match -> maxed out up to any type of wildcard. NO MASK.
-    // segment wildcard -> next static text in reverse by itself (not merged with next segment)
-    // path wildcard -> next is static match starting at next segment
-    // wildcards merged with static BUT node MUST end with wildcard
-    //
-    // segment wildcard has mask ending with 0s
-    // path wildcard has mask ending with 0s
-    //
-    // segment wildcard limit 1 per segment
-    // path wildcard limit 1 per route
-    //
-    // segment wildcard go to end of segment '/' and then grab max static char length from children
-    // (stored)
-    // and then grab last N bytes of own segment into SIMD and then match against next children.
-    // afterwards static match as normal
-    //
-    // path wildcard children from this point on are reversed so start matching from back of url
   }
 }

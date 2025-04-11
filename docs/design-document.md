@@ -88,6 +88,8 @@ All route nodes are fundamentally static nodes with specialized behavior for wil
   - Early termination at wildcard marker
 - Matched using SIMD from front
 - Static nodes have no vector mask
+- Longer static text is automatically split into multiple nodes at vector boundaries
+- This splitting is purely an implementation detail and doesn't affect the logical trie structure
 
 #### Node Types
 
@@ -141,6 +143,8 @@ Parameters are stored in an array and can be accessed by index or name (if named
 
 ## 4. Route Selection Priority
 
+### 4.1 Priority Rules
+
 When multiple routes match a URL, the router selects the most specific route:
 
 1. Static segments are prioritized over wildcards
@@ -155,12 +159,20 @@ The first route is selected because in the second segment, `b` (static) is selec
 
 This prioritization is implemented by sorting children by type (static, wildcard, glob) on the first dimension and by length (descending) on the second dimension. This ensures that the most specific route is always selected during the matching process.
 
+### 4.2 Multiple Handlers
+
+The router supports multiple handlers for the same route pattern. When a route pattern is registered multiple times with different handlers, all handlers are chained and executed in registration order when the route is matched.
+
+This allows for flexible middleware-like patterns where multiple handlers can process the same request, similar to how other routers like Vert.x handle multiple handlers for the same route.
+
 ## 5. Parser Implementation
+
+### 5.1 ANTLR4 Grammar
 
 The router uses ANTLR4 for parsing route patterns:
 
-1. **RouteLexer**: Tokenizes the route pattern
-2. **RouteParser**: Parses the tokens into a syntax tree
+1. **RouteLexer**: Tokenizes the route pattern into tokens like SLASH, WILDCARD, STATIC_TEXT, etc.
+2. **RouteParser**: Parses the tokens into a syntax tree according to the grammar rules
 3. **RouteParserBaseVisitor**: Visits the syntax tree to build route nodes
 
 This approach provides:
@@ -168,12 +180,30 @@ This approach provides:
 - Robust error handling
 - Maintainable grammar definition
 
+### 5.2 Error Handling
+
+The parser provides detailed error messages for malformed routes:
+
+1. **Syntax Error Detection**: The ANTLR4 parser automatically detects syntax errors during parsing
+2. **Error Reporting**: Errors are reported with line and character position information
+3. **Exception Handling**: When adding routes, syntax errors are converted to `IllegalArgumentException` with descriptive messages
+
+Common syntax errors include:
+- Unbalanced brackets or braces: `/path/{varname`
+- Invalid variable group syntax: `/path/**[*{foo}, *{bar},]`
+- Multiple path wildcards: `**/hi/**`
+- Invalid optional markers: `/hello??`
+
+Developers receive immediate feedback during route registration, with errors that pinpoint the exact location and nature of syntax issues.
+
 ## 6. Performance Considerations
 
 ### 6.1 Vector Size Constraints
 - All nodes are built around the CPU's preferred vector species size
 - This size determines the maximum merge size for static text
 - Text merging stops at vector size limit
+- Longer static segments are automatically split into multiple nodes at vector boundaries
+- This splitting is transparent to the matching algorithm, which processes each node the same way
 
 ### 6.2 Memory Access Patterns
 - Minimizes cache misses through careful memory layout
@@ -191,11 +221,25 @@ This approach provides:
   - Most nodes will likely be 1 vector in size
   - When hitting a wildcard, jump to string index + node byte length in URI string and clear stack
 
-## 7. Future Enhancements
+### 6.4 Cross-Platform Consistency
+- The router maintains the same trie structure and matching algorithm across all platforms
+- Only the node boundaries vary based on the platform's preferred vector size
+- This approach ensures consistent behavior while optimizing for each platform's SIMD capabilities
+- Performance will vary across platforms with different vector sizes, but will consistently outperform traditional non-SIMD routers
 
-- Compile-time route validation
-- More advanced pattern matching capabilities
-- HTTP method-based routing
-- Content negotiation
-- Middleware support
-- Automatic documentation generation
+## 7. Core Features
+
+### 7.1 Compile-time Route Validation
+
+The router provides compile-time validation of routes to catch errors early in the development cycle. This is a core feature of the project.
+
+Validation includes:
+- Syntax validation through the grammar rules
+- Semantic validation for specific constraints (e.g., no multiple path wildcards in the same route)
+- Structural validation of variable groups and parameter lists
+
+Developers receive immediate feedback with descriptive error messages for invalid patterns during compilation.
+
+### 7.2 HTTP Method-Based Routing
+
+The router supports HTTP method-based routing as a core feature. This allows routes to be defined with specific HTTP methods (GET, POST, PUT, DELETE, etc.) and ensures that requests are only matched against routes that support the requested method.
