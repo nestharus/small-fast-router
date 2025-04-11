@@ -1,0 +1,22 @@
+/*
+ * Spotless plugin configuration
+ */
+
+// Configure Spotless for all projects that have the spotless plugin applied
+allprojects {
+    plugins.withId('com.diffplug.spotless') {
+        spotless {
+            java {
+                googleJavaFormat()
+                removeUnusedImports()
+                importOrder('java', 'javax', '', 'com.example')
+                target 'src/*/java/**/*.java'
+            }
+        }
+        
+        // Make compileJava depend on spotlessApply so formatting happens before compilation
+        tasks.withType(JavaCompile) { task ->
+            task.dependsOn tasks.named('spotlessApply')
+        }
+    }
+}
