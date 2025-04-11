@@ -1,0 +1,19 @@
+/*
+ * Source sets configuration for the root project
+ */
+
+// Configure source sets for the root project
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/main/gen']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java', 'src/main/gen']
+        }
+    }
+}
+
+// Python CI code is handled separately from the Java module structure

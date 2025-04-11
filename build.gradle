@@ -1,40 +1,69 @@
+/*
+ * Main build file
+ *
+ * Plugin-specific configurations are in separate files:
+ * - java.gradle: Java configuration
+ * - lombok.gradle: Lombok configuration
+ * - spotless.gradle: Spotless configuration
+ *
+ * Subproject-specific configurations are in each subproject's build.gradle file
+ * For example, see utilities/build.gradle
+ */
+
+// Plugins applied to the root project only
 plugins {
-    id 'buildlogic.java-library-conventions'
+    id 'java-library'
+    id 'com.github.ben-manes.versions' version '0.52.0' // For checking dependency updates
+    id 'io.freefair.lombok' version '8.13.1' // For Lombok support
+    id 'com.diffplug.spotless' version '7.0.3' // For code formatting
+    // Removed IntelliJ Platform plugin as it's not needed for this project
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs += ['--add-modules', 'jdk.incubator.vector']
-}
+// Apply common configuration scripts
+apply from: 'dependencies.gradle'
+apply from: 'plugin.java.gradle'
+apply from: 'plugin.lombok.gradle'
+apply from: 'plugin.spotless.gradle'
+apply from: 'sourcesets.gradle'
 
-tasks.withType(Test) {
-    jvmArgs += ['--add-modules', 'jdk.incubator.vector']
-}
-
-tasks.withType(JavaExec) {
-    jvmArgs += ['--add-modules', 'jdk.incubator.vector']
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java', 'src/main/gen']
-        }
+// Common configurations for ALL projects (root + subprojects)
+allprojects {
+    repositories {
+        mavenCentral()
     }
-    test {
-        java {
-            srcDirs = ['src/test/java', 'src/main/gen']
-        }
+
+    // Enable dependency locking for all configurations
+    dependencyLocking {
+        lockAllConfigurations()
     }
 }
 
+// Note: Subproject-specific configurations are now in each subproject's build.gradle file
+// For example, see utilities/build.gradle
+
+// ROOT PROJECT specific configurations (not applied to subprojects)
+// Note: Source sets are configured in sourcesets.gradle
+// Note: JVM arguments are configured in java.gradle
+
+// Main project dependencies
 dependencies {
-    implementation group: 'org.antlr', name: 'antlr4-runtime', version: '4.13.2'
-    implementation group: 'io.vertx', name: 'vertx-core', version: '5.0.0.CR2'
-    implementation group: 'io.vertx', name: 'vertx-web', version: '5.0.0.CR2'
-    implementation group: 'io.vertx', name: 'vertx-codegen', version: '5.0.0.CR2'
-    implementation group: 'com.google.dagger', name: 'dagger', version: '2.52'
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.115.Final'
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.16'
-    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.16'
-    testImplementation group: 'io.vertx', name: 'vertx-unit', version: '5.0.0.CR2'
+    implementation libs.antlrRuntime
+    implementation libs.vertxCore
+    implementation libs.vertxWeb
+    implementation libs.vertxCodegen
+    implementation libs.dagger
+    implementation libs.netty
+    implementation libs.slf4jApi
+    implementation libs.geldata
+
+    // Lombok is automatically added by the plugin
+    // compileOnly libs.lombok
+    // annotationProcessor libs.lombok
+
+    testImplementation libs.slf4jSimple
+    testImplementation libs.vertxUnit
+
+    // Module dependencies
+    implementation project(':utilities')
 }
+

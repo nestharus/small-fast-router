@@ -1,4 +1,3 @@
 package org.nestharus.router;
 
-public class HttpRouter {
-}
+public class HttpRouter {}

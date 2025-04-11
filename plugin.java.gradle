@@ -1,0 +1,35 @@
+/*
+ * Java configuration
+ */
+
+// Configure Java for all projects that have the java-library plugin applied
+allprojects {
+    plugins.withId('java-library') {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(javaVersion)
+            }
+        }
+        
+        testing {
+            suites {
+                test {
+                    useJUnitJupiter()
+                }
+            }
+        }
+        
+        // JVM arguments for vector API
+        tasks.withType(JavaCompile) {
+            options.compilerArgs += ['--add-modules', 'jdk.incubator.vector']
+        }
+        
+        tasks.withType(Test) {
+            jvmArgs += ['--add-modules', 'jdk.incubator.vector']
+        }
+        
+        tasks.withType(JavaExec) {
+            jvmArgs += ['--add-modules', 'jdk.incubator.vector']
+        }
+    }
+}
