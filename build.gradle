@@ -22,6 +22,7 @@ apply from: 'dependencies.gradle'
 apply from: 'plugin.java.gradle'
 apply from: 'plugin.lombok.gradle'
 apply from: 'plugin.spotless.gradle'
+apply from: 'plugin.antlr.gradle'
 apply from: 'sourcesets.gradle'
 
 allprojects {
@@ -35,7 +36,6 @@ allprojects {
     }
 }
 
-mainClassName = 'org.nestharus.router.Server'
 application {
     mainClass = 'org.nestharus.router.Server'
 }
@@ -46,14 +46,13 @@ run {
 
 // Main project dependencies
 dependencies {
-    implementation libs.antlrRuntime
     implementation libs.vertxCore
     implementation libs.vertxWeb
     implementation libs.vertxCodegen
     implementation libs.dagger
     implementation libs.netty
     implementation libs.slf4jApi
-    implementation libs.slf4jSimple // Changed from testImplementation to implementation for logging
+    implementation libs.slf4jSimple
     implementation libs.geldata
     implementation libs.jsr305
     implementation libs.guava
@@ -63,4 +62,5 @@ dependencies {
 
     // Module dependencies
     implementation project(':utilities')
+    implementation project(':router-compiler')
 }

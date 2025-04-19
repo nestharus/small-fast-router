@@ -11,25 +11,27 @@ The following table shows the dependencies between tickets. Each ticket lists th
 | SFRT-006 | Implement Vector API Integration | None | SFRT-001, SFRT-007, SFRT-008, SFRT-009, SFRT-010 |
 | SFRT-001 | Implement Node Types for Route Segments | SFRT-006 | SFRT-002, SFRT-003, SFRT-007, SFRT-008, SFRT-009 |
 | SFRT-002 | Implement ANTLR4-Based Route Parser | SFRT-001 | SFRT-003, SFRT-019 |
-| SFRT-003 | Implement Trie Structure for Route Storage | SFRT-001, SFRT-002 | SFRT-004, SFRT-011 |
-| SFRT-010 | Implement Vector Processing Strategy | SFRT-006 | SFRT-007, SFRT-008, SFRT-009, SFRT-011, SFRT-015, SFRT-016, SFRT-017 |
-| SFRT-007 | Implement SIMD-Based Static Node Matching | SFRT-001, SFRT-006, SFRT-010 | SFRT-004 |
-| SFRT-008 | Implement SIMD-Based Wildcard Node Matching | SFRT-001, SFRT-006, SFRT-010 | SFRT-004 |
-| SFRT-009 | Implement SIMD-Based Path Wildcard Matching | SFRT-001, SFRT-006, SFRT-010 | SFRT-004 |
+| SFRT-003 | Implement Adaptive Trie Structure for Route Storage | SFRT-001, SFRT-002 | SFRT-004, SFRT-011, SFRT-021 |
+| SFRT-010 | Implement Vector Processing Strategy | SFRT-006 | SFRT-007, SFRT-008, SFRT-009, SFRT-011 |
+| SFRT-007 | Implement Static Node Matching | SFRT-001, SFRT-006, SFRT-010 | SFRT-004 |
+| SFRT-008 | Implement Wildcard Node Matching | SFRT-001, SFRT-006, SFRT-010 | SFRT-004 |
+| SFRT-009 | Implement Path Wildcard Matching | SFRT-001, SFRT-006, SFRT-010 | SFRT-004 |
 | SFRT-004 | Implement Route Matching Algorithm | SFRT-003, SFRT-007, SFRT-008, SFRT-009 | SFRT-005, SFRT-011 |
 | SFRT-005 | Implement Parameter Extraction and Type Conversion | SFRT-004 | SFRT-011 |
-| SFRT-011 | Implement HTTP Router Interface | SFRT-004, SFRT-005, SFRT-010 | SFRT-012, SFRT-013, SFRT-014 |
+| SFRT-021 | Implement Compile-time Evaluation Process | SFRT-003, SFRT-007, SFRT-008, SFRT-009 | SFRT-022 |
+| SFRT-022 | Implement Trie Serialization and Deserialization | SFRT-021 | SFRT-011, SFRT-018 |
+| SFRT-011 | Implement HTTP Router Interface | SFRT-004, SFRT-005, SFRT-022 | SFRT-012, SFRT-013, SFRT-014 |
 | SFRT-012 | Implement Vert.x Integration | SFRT-011 | SFRT-015 |
 | SFRT-013 | Implement Middleware Support | SFRT-011 | SFRT-014 |
 | SFRT-014 | Implement Fluent API | SFRT-011, SFRT-013 | SFRT-015, SFRT-020 |
 | SFRT-015 | Implement Benchmark Suite | SFRT-012, SFRT-014 | SFRT-016, SFRT-017, SFRT-018 |
 | SFRT-016 | Optimize Memory Usage | SFRT-015 | SFRT-018 |
 | SFRT-017 | Optimize CPU Cache Usage | SFRT-015 | SFRT-018 |
-| SFRT-018 | Implement Final Performance Tuning | SFRT-015, SFRT-016, SFRT-017 | SFRT-020 |
+| SFRT-018 | Implement Final Performance Tuning | SFRT-015, SFRT-016, SFRT-017, SFRT-022 | SFRT-020 |
 | SFRT-019 | Implement Compile-Time Route Validation | SFRT-002 | SFRT-020 |
 | SFRT-020 | Create Comprehensive Documentation and Examples | SFRT-014, SFRT-018, SFRT-019 | None |
 
-## Phase 1: SIMD-Based Core Implementation (4 weeks)
+## Phase 1: Core Matching Implementation (5 weeks)
 
 ### SFRT-006: Implement Vector API Integration
 **Description:** Integrate Java's Vector API for SIMD operations in the router.
@@ -43,24 +45,24 @@ The following table shows the dependencies between tickets. Each ticket lists th
 - Implement direct memory access to String's underlying byte array:
   - Use VarHandles to access String's byte array without copying
   - Handle different String encodings (Latin1 vs. UTF-16)
-- Add fallback for platforms without SIMD support:
-  - Implement non-SIMD versions of all vector operations
-  - Add runtime detection of SIMD support
+- Add support for different vector species sizes:
+  - Implement detection of platform's preferred vector species
+  - Support for 64, 128, 256, and 512-bit vector operations
 **Acceptance Criteria:**
 - Vector API is correctly integrated
 - Direct memory access works for all String encodings
-- Fallback works on platforms without SIMD support
+- Support for different vector species sizes works correctly
 - Unit tests verify correct vector operations
-- No performance regression on non-SIMD platforms
+- Performance scales with vector size
 
 ### SFRT-010: Implement Vector Processing Strategy
 **Description:** Implement the overall vector processing strategy for route matching.
 **Technical Details:**
 - Implement the vector processing strategy as described in the design document:
-  - Scan forward along URI string, converting into vectors
-  - Keep N vectors on a stack, popping them as they're consumed
-  - Clear stack on match (set index to 0)
-  - When hitting a wildcard, jump to string index + node byte length in URI string and clear stack
+  - Vectors are pushed onto a stack as the trie is traversed
+  - When a node fails to match, pop from the stack and backtrack
+  - When a node matches, continue traversing down the trie
+  - When hitting a wildcard, jump to string index + node byte length in URI string and continue traversal
 - Optimize for common cases:
   - Most nodes will be 1 vector in size
   - Use specialized code paths for common cases
@@ -82,24 +84,29 @@ The following table shows the dependencies between tickets. Each ticket lists th
 **Description:** Create the fundamental node types that represent different segments in a route pattern.
 **Technical Details:**
 - Create an abstract `RouteNode` base class with common functionality
+- Implement two node structure variants:
+  - Register-sized prefix nodes for SIMD matching
+  - Compressed prefix nodes for byte comparison
 - Implement `StaticNode` class for static text segments with the following features:
   - Store the static text as a byte array for direct comparison
   - Add a boolean flag for optional segments (e.g., `/users?`)
-  - Implement methods for matching against URL segments
-  - Design node structure to handle vector-sized chunks
+  - Implement methods for matching against URL segments using both strategies
+  - Design node structure to handle vector-sized chunks for SIMD
   - Implement automatic splitting of longer static text at vector boundaries
 - Implement `StarNode` class for single-segment wildcards with the following features:
   - Support for named parameters (e.g., `*{id}`)
   - Support for optional wildcards (e.g., `*?`)
   - Support for prefix/suffix patterns (e.g., `abc*xyz`)
   - Methods for parameter extraction
+  - Support for both SIMD and byte comparison matching
 - Implement `DoubleStarNode` class for path wildcards with the following features:
   - Support for named parameters (e.g., `**{path}`)
   - Support for minimum segment count (e.g., `**[*{type}, *{id}]`)
   - Methods for parameter extraction
+  - Support for reversed sub-trie processing
 **Acceptance Criteria:**
 - All node types correctly implement the `RouteNode` interface
-- Node types are designed around vector size constraints
+- Node types support both SIMD and byte comparison strategies
 - Unit tests verify each node type can match its corresponding pattern type
 - Node types support all pattern features described in the design document
 
@@ -125,30 +132,33 @@ The following table shows the dependencies between tickets. Each ticket lists th
 - Unit tests for each pattern type and edge cases
 - Performance benchmarks for parsing complex patterns
 
-### SFRT-003: Implement Trie Structure for Route Storage
-**Description:** Create an optimized trie data structure for storing routes and efficient lookup.
+### SFRT-003: Implement Adaptive Trie Structure for Route Storage
+**Description:** Create an optimized trie data structure that supports both SIMD and byte comparison matching strategies.
 **Technical Details:**
 - Implement a trie structure with the following features:
   - Each node in the trie represents a segment in the route
   - Child nodes are stored in a map or array for fast lookup
   - Static nodes are stored first, followed by wildcard nodes, then path wildcard nodes
   - Within each type, nodes are sorted by length (descending) for correct route selection priority
+- Implement node structure variants:
+  - Register-sized prefix nodes for SIMD matching
+  - Compressed prefix nodes for byte comparison
 - Implement node merging optimization:
-  - Merge consecutive static segments up to vector size limit (e.g., 64 bytes)
-  - Store merged text as a byte array for direct comparison
-  - Use back bytemask to handle final chunk shorter than vector size
+  - Merge consecutive static segments up to vector size limit (e.g., 64 bytes) for SIMD
+  - Maximize prefix compression for byte comparison
+  - Use back bytemask to handle partial chunks for SIMD
 - Add methods for adding routes to the trie:
   - Parse route pattern into nodes
   - Insert nodes into the trie
   - Handle route conflicts and duplicates
-- Implement route explosion for optional segments:
-  - For each optional segment, create two paths (with and without the segment)
-  - Handle nested optional segments
+- Implement adaptive strategy selection:
+  - Select between SIMD and byte comparison based on node characteristics
+  - Optimize selection per list of nodes
 **Acceptance Criteria:**
 - Trie correctly stores all route types
 - Route insertion handles all pattern types
-- Node merging optimization works correctly
-- Route explosion correctly handles optional segments
+- Both node structure variants work correctly
+- Adaptive strategy selection improves performance
 - Unit tests verify correct storage and retrieval of routes
 
 ### SFRT-004: Implement Route Matching Algorithm
@@ -203,99 +213,105 @@ The following table shows the dependencies between tickets. Each ticket lists th
 - Exceptions are thrown for missing required parameters
 - Unit tests verify correct parameter extraction and conversion
 
-## Phase 2: Advanced Routing Features (4 weeks)
+## Phase 2: Advanced Routing Features (5 weeks)
 
-### SFRT-008: Implement SIMD-Based Wildcard Node Matching
-**Description:** Optimize wildcard node matching using SIMD operations for prefix and suffix matching.
+### SFRT-021: Implement Compile-time Evaluation Process
+**Description:** Create a system for evaluating and selecting the optimal matching strategy during compilation.
 **Technical Details:**
-- Modify `StarNode` to use vector operations for prefix and suffix matching:
+- Implement evaluation criteria for matching strategy selection:
+  - Node length analysis (longer nodes benefit more from SIMD)
+  - Number of children analysis (more children benefit from SIMD)
+  - Overhead analysis for SIMD vs byte comparison
+- Create benchmarking mechanism for node list performance comparison:
+  - Measure performance of both strategies for each list of nodes
+  - Collect metrics for comparison
+  - Select the faster version for each list of nodes
+- Implement strategy selection based on evaluation results:
+  - Store the selected strategy with each list of nodes
+  - Create configuration for optimal matching
+- Design serialization format for optimized tries:
+  - Define binary format for trie serialization
+  - Include node types, properties, and selected strategies
+  - Support for different vector species sizes
+**Acceptance Criteria:**
+- Evaluation process correctly identifies optimal strategy
+- Performance metrics are reliable and consistent
+- Strategy selection improves overall performance
+- Serialization format preserves all necessary information
+- Unit tests verify correct evaluation and selection
+
+### SFRT-008: Implement Wildcard Node Matching
+**Description:** Implement wildcard node matching using both SIMD and byte comparison strategies.
+**Technical Details:**
+- Implement SIMD-based wildcard matching:
   - Convert prefix and suffix to ByteVector for comparison
   - Use VectorMask for handling partial loads
   - Implement early termination for non-matching prefix/suffix
-- Optimize parameter extraction using vector operations:
-  - Use vector operations to find parameter boundaries
+  - Ensure wildcard matching respects segment boundaries
+- Implement byte comparison-based wildcard matching:
+  - Direct byte-by-byte comparison for prefix and suffix
+  - Track exact positions without vector alignment concerns
+  - Optimize for short patterns
+- Optimize parameter extraction for both strategies:
   - Extract parameter value without string allocation
+  - Use exact byte offsets from matching process
 - Implement specialized handling for common wildcard patterns:
   - Optimize for wildcards without prefix/suffix
   - Optimize for wildcards with only prefix or only suffix
-- Add vector-based comparison for URL segments:
-  - Convert URL segment to ByteVector
-  - Compare prefix/suffix with segment using SIMD operations
-  - Use vector mask for handling segment boundaries
 **Acceptance Criteria:**
-- Wildcard node matching uses SIMD operations
-- Performance improvement over non-SIMD implementation
+- Both SIMD and byte comparison strategies work correctly
+- Performance improvement over baseline implementation
 - Correct matching for all wildcard patterns
 - Correct parameter extraction
 - Unit tests verify correct matching and parameter extraction
 
 
-### SFRT-007: Implement SIMD-Based Static Node Matching
-**Description:** Optimize static node matching using SIMD operations for parallel byte comparison.
+### SFRT-007: Implement Static Node Matching
+**Description:** Implement static node matching using both SIMD and byte comparison strategies.
 **Technical Details:**
-- Modify `StaticNode` to use vector operations for matching:
+- Implement SIMD-based static node matching:
   - Convert static text to ByteVector for comparison
   - Use VectorMask for handling partial loads
   - Implement early termination for non-matching segments
-- Optimize for common case (single vector size):
-  - Most static segments are shorter than vector size (e.g., 64 bytes)
-  - Use specialized code path for single vector comparison
-- Implement loop comparison for longer nodes:
-  - For nodes longer than vector size, use a loop to compare multiple vectors
-  - Optimize loop for cache efficiency
-- Add vector-based comparison for URL segments:
-  - Convert URL segment to ByteVector
-  - Compare with node's ByteVector using SIMD operations
-  - Use vector mask for handling segment boundaries
+  - Optimize for common case (single vector size)
+  - Implement loop comparison for longer nodes
+- Implement byte comparison-based static node matching:
+  - Direct byte-by-byte comparison
+  - Optimize for short segments
+  - Early termination for non-matching segments
+- Implement adaptive strategy selection:
+  - Use SIMD for longer nodes with many children
+  - Use byte comparison for shorter nodes with few children
+- Optimize memory access patterns for both strategies:
+  - Minimize cache misses
+  - Avoid unnecessary allocations
 **Acceptance Criteria:**
-- Static node matching uses SIMD operations
-- Performance improvement over non-SIMD implementation
+- Both SIMD and byte comparison strategies work correctly
+- Adaptive strategy selection improves overall performance
 - Correct matching for all static segment patterns
-- Handles segments longer than vector size
+- Handles segments of all sizes efficiently
 - Unit tests verify correct matching
 
-### SFRT-009: Implement SIMD-Based Path Wildcard Matching
-**Description:** Optimize path wildcard matching using SIMD operations and reversed sub-trie processing.
+### SFRT-009: Implement Path Wildcard Matching
+**Description:** Implement path wildcard matching using reversed sub-trie processing with both SIMD and byte comparison strategies.
 **Technical Details:**
-- Modify `DoubleStarNode` to use vector operations for matching:
-  - Implement reversed sub-trie processing using vector operations
-  - Use vector operations for minimum segment count checking
-- Optimize parameter extraction using vector operations:
-  - Use vector operations to find parameter boundaries
+- Implement the reversed sub-trie approach for path wildcards:
+  - Switch to reversed sub-trie processing after matching a path wildcard
+  - Jump to end of URL and match against character-reversed sub-trie
+  - Extract parameter value between node end and reversed match start
+- Support both SIMD and byte comparison strategies:
+  - Implement SIMD-based reversed matching
+  - Implement byte comparison-based reversed matching
+- Optimize parameter extraction for both strategies:
   - Extract parameter value without string allocation
+  - Use exact byte offsets from matching process
 - Implement specialized handling for common path wildcard patterns:
   - Optimize for path wildcards without minimum segment count
   - Optimize for path wildcards with small minimum segment count
-- Add vector-based comparison for URL segments:
-  - Convert URL segments to ByteVector
-  - Compare with node's ByteVector using SIMD operations
-  - Use vector mask for handling segment boundaries
+- Enforce the limitation of one path wildcard per route pattern
 **Acceptance Criteria:**
-- Path wildcard node matching uses SIMD operations
-- Performance improvement over non-SIMD implementation
-- Correct matching for all path wildcard patterns
-- Correct parameter extraction
-- Unit tests verify correct matching and parameter extraction
-
-### SFRT-009: Implement SIMD-Based Path Wildcard Matching
-**Description:** Optimize path wildcard matching using SIMD operations and reversed sub-trie processing.
-**Technical Details:**
-- Modify `DoubleStarNode` to use vector operations for matching:
-  - Implement reversed sub-trie processing using vector operations
-  - Use vector operations for minimum segment count checking
-- Optimize parameter extraction using vector operations:
-  - Use vector operations to find parameter boundaries
-  - Extract parameter value without string allocation
-- Implement specialized handling for common path wildcard patterns:
-  - Optimize for path wildcards without minimum segment count
-  - Optimize for path wildcards with small minimum segment count
-- Add vector-based comparison for URL segments:
-  - Convert URL segments to ByteVector
-  - Compare with node's ByteVector using SIMD operations
-  - Use vector mask for handling segment boundaries
-**Acceptance Criteria:**
-- Path wildcard node matching uses SIMD operations
-- Performance improvement over non-SIMD implementation
+- Both SIMD and byte comparison strategies work correctly
+- Reversed sub-trie processing works efficiently
 - Correct matching for all path wildcard patterns
 - Correct parameter extraction
 - Unit tests verify correct matching and parameter extraction
@@ -305,7 +321,7 @@ The following table shows the dependencies between tickets. Each ticket lists th
 **Technical Details:**
 - Implement a matching algorithm that traverses the trie to find matching routes:
   - Start at the root node and traverse the trie based on URL segments
-  - For static nodes, compare the segment with the node's text
+  - For static nodes, compare the segment with the node's text using the selected strategy
   - For wildcard nodes, match a single segment and extract parameter value
   - For path wildcard nodes, match multiple segments and extract parameter value
 - Implement route selection priority:
@@ -327,7 +343,7 @@ The following table shows the dependencies between tickets. Each ticket lists th
 - Path wildcard matching works with reversed sub-trie processing
 - Unit tests verify correct matching for all pattern types
 
-### SFRT-003: Implement Trie Structure for Route Storage
+### SFRT-003: Implement Adaptive Trie Structure for Route Storage
 **Description:** Create an optimized trie data structure for storing routes and efficient lookup.
 **Technical Details:**
 - Implement a trie data structure with the following features:
@@ -455,7 +471,35 @@ The following table shows the dependencies between tickets. Each ticket lists th
 - Unit tests verify correct API behavior
 - Examples demonstrate API usage
 
-## Phase 4: Performance Optimization and Benchmarking (3 weeks)
+## Phase 4: Performance Optimization and Benchmarking (4 weeks)
+
+### SFRT-022: Implement Trie Serialization and Deserialization
+**Description:** Create a system for serializing optimized tries during compilation and deserializing them at runtime.
+**Technical Details:**
+- Implement trie serialization:
+  - Create serializers for all node types
+  - Preserve node structure, properties, and selected strategies
+  - Generate separate serialized tries for different vector species sizes
+  - Add version information for compatibility
+- Implement trie deserialization:
+  - Create deserializers for all node types
+  - Restore node structure, properties, and selected strategies
+  - Add platform detection for appropriate trie selection
+  - Implement version checking and validation
+- Add runtime trie selection:
+  - Detect platform's vector capabilities
+  - Select appropriate serialized trie
+  - Fall back to runtime generation if needed
+- Optimize serialization format for size and speed:
+  - Minimize serialized size
+  - Optimize for fast deserialization
+  - Use efficient binary format
+**Acceptance Criteria:**
+- Serialization correctly preserves all trie information
+- Deserialization correctly restores the trie
+- Runtime selection chooses the appropriate trie
+- Performance improvement from pre-compiled tries
+- Unit tests verify correct serialization and deserialization
 
 ### SFRT-015: Implement Benchmark Suite
 **Description:** Create a comprehensive benchmark suite for measuring router performance.
@@ -601,13 +645,19 @@ The following table shows the dependencies between tickets. Each ticket lists th
 
 2. **Performance Bottlenecks**
    - Risk: SIMD operations may not provide expected performance gains in all scenarios
-   - Mitigation: Implement fallback non-SIMD code paths for comparison
+   - Mitigation: Implement byte comparison as an alternative strategy
+   - Mitigation: Use compile-time evaluation to select the optimal strategy
    - Mitigation: Benchmark extensively with different route patterns and payload sizes
 
 3. **Complex Route Patterns**
-   - Risk: Some complex route patterns may be difficult to match efficiently with SIMD
+   - Risk: Some complex route patterns may be difficult to match efficiently
    - Mitigation: Identify edge cases early and design specialized algorithms
-   - Mitigation: Consider hybrid approaches for particularly complex patterns
+   - Mitigation: Use the adaptive strategy to select the best approach for each pattern
+
+4. **Serialization Compatibility**
+   - Risk: Serialized tries may not be compatible across different JVM versions
+   - Mitigation: Implement version checking in the serialization format
+   - Mitigation: Add fallback to runtime trie generation if deserialization fails
 
 ## Documentation and Examples
 

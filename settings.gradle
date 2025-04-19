@@ -11,3 +11,5 @@ rootProject.name = 'small-fast-router'
 
 // Include the utilities module
 include 'utilities'
+include 'router-compiler'
+

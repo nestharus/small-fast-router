@@ -7,7 +7,7 @@ def create_gradle_container(client, source):
     Creates a Gradle container with the project source code
     """
     return (client.container()
-        .from_("gradle:8.11.1-jdk21")
+        .from_("gradle:8.13-jdk23")
         .with_directory("/src", source)
         .with_workdir("/src"))
 

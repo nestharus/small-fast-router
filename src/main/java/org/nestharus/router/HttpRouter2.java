@@ -3,9 +3,11 @@ package org.nestharus.router;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+@Getter
 public class HttpRouter2<T extends HttpParameters> {
   public interface RouteNode {
     String toString();
@@ -43,9 +45,9 @@ public class HttpRouter2<T extends HttpParameters> {
 
   public static class DoubleStarNode implements RouteNode {
     final String prefix;
-    final int minLength;
+    final long minLength;
 
-    DoubleStarNode(String prefix, int minLength) {
+    DoubleStarNode(String prefix, long minLength) {
       this.prefix = prefix;
       this.minLength = minLength;
     }
@@ -57,10 +59,6 @@ public class HttpRouter2<T extends HttpParameters> {
   }
 
   private final List<RouteNode> nodes = new ArrayList<>();
-
-  public List<RouteNode> getNodes() {
-    return nodes;
-  }
 
   public T get(final String uri) {
     return null;
@@ -111,8 +109,8 @@ public class HttpRouter2<T extends HttpParameters> {
                 < ctx.wildcard().getStart().getStartIndex()) {
           nodes.add(
               new StarNode(
-                  staticSegments.get(0).STATIC_TEXT().getText(),
-                  staticSegments.get(0).OPTIONAL() != null));
+                  staticSegments.getFirst().STATIC_TEXT().getText(),
+                  staticSegments.getFirst().OPTIONAL() != null));
         } else {
           // No prefix
           nodes.add(new StarNode("", ctx.wildcard().OPTIONAL() != null));
@@ -124,8 +122,8 @@ public class HttpRouter2<T extends HttpParameters> {
                 > ctx.wildcard().getStop().getStopIndex()) {
           nodes.add(
               new StaticNode(
-                  staticSegments.get(0).STATIC_TEXT().getText(),
-                  staticSegments.get(0).OPTIONAL() != null));
+                  staticSegments.getFirst().STATIC_TEXT().getText(),
+                  staticSegments.getFirst().OPTIONAL() != null));
         } else if (staticSegments.size() > 1) {
           nodes.add(
               new StaticNode(
@@ -143,7 +141,7 @@ public class HttpRouter2<T extends HttpParameters> {
           prefix = ctx.STATIC_TEXT().getText();
         }
 
-        int minLength = 0;
+        long minLength = 0;
         // Check for single varname
         if (ctx.varname() != null) {
           minLength = 1; // Single variable name counts as 1 required variable

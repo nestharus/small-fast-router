@@ -30,15 +30,26 @@ The small-fast-router project aims to create a high-performance HTTP router that
   - Provides methods to get and set parameters
   - Parameters are extracted during route matching
 
-### 2. SIMD Optimization Components
+### 2. Matching Strategy Components
 
-#### 2.1 Vector API Integration
+#### 2.1 SIMD Optimization
 - Uses Java's Vector API (incubator module) for SIMD operations
 - **ByteVector** for byte array comparisons
 - **VectorMask** for handling partial loads
 - **VectorSpecies<Byte>.SPECIES_PREFERRED** for optimal performance
+- Vector processing optimizations for efficient matching
 
-#### 2.2 Memory Access Optimization
+#### 2.2 Byte Comparison Optimization
+- Direct byte-by-byte comparison for certain node types
+- Efficient for short nodes or nodes with few children
+- Avoids SIMD overhead in cases where it would be inefficient
+
+#### 2.3 Adaptive Strategy Selection
+- Runtime selection between SIMD and byte comparison methods
+- Selection based on node characteristics (length, number of children)
+- Per-list-of-nodes optimization for maximum performance
+
+#### 2.4 Memory Access Optimization
 - Direct memory access to String's underlying byte array via VarHandles
 - Avoids unnecessary string allocations during matching
 - Uses `STRING_VALUE_HANDLE` and `STRING_CODER_HANDLE` for direct access
@@ -93,49 +104,54 @@ The small-fast-router project aims to create a high-performance HTTP router that
 - Comprehensive test suite for route parsing
 
 ### Missing Components
-- SIMD-based route matching implementation
+- Adaptive matching strategy implementation (SIMD and byte comparison)
 - Vector-optimized trie structure for efficient route storage
-- Parameter extraction during SIMD matching
-- HTTP server integration with the SIMD-optimized router
+- Compile-time optimization and evaluation process
+- Trie serialization and deserialization mechanisms
+- Parameter extraction during matching
+- HTTP server integration with the optimized router
 - Benchmarking and performance optimization
 
 ## Implementation Plan
 
-### Phase 1: SIMD-Based Core Implementation
+### Phase 1: Core Matching Implementation
 
 #### Tasks
-1. **Implement SIMD Foundation**
-   - Set up Vector API integration for byte array operations
+1. **Implement Matching Foundations**
+   - Set up Vector API integration for SIMD operations
    - Implement direct memory access to String's underlying byte array via VarHandles
-   - Create vector processing strategy using stack/queue for vectors
+   - Create vector processing strategy using stack for trie traversal
    - Implement vector masks and back bytemasks for partial chunks
+   - Develop byte comparison implementation for alternative matching strategy
 
-2. **Develop SIMD-Optimized Node Structure**
-   - Create base node structure designed around vector size constraints
+2. **Develop Node Structure Variants**
+   - Create base node structure with common functionality
+   - Implement register-sized prefix nodes for SIMD matching
+   - Implement compressed prefix nodes for byte comparison
    - Implement the 3-case enum switch for node types (StaticNode, StarNode, DoubleStarNode)
-   - Design node structure to handle vector-sized chunks
-   - Implement automatic splitting of longer static text at vector boundaries
+   - Design node structure to handle both matching strategies
 
-3. **Build Basic Trie with SIMD Matching**
-   - Create a trie data structure optimized for SIMD operations
-   - Implement static node matching using SIMD comparisons
+3. **Build Adaptive Trie Structure**
+   - Create a trie data structure supporting both matching strategies
+   - Implement static node matching using both SIMD and byte comparison
    - Add support for node merging within vector size constraints
    - Implement memory optimization techniques for cache locality
+   - Develop strategy selection logic based on node characteristics
 
 #### Deliverables
-- SIMD-optimized core router structure
+- Adaptive core router structure supporting both matching strategies
 - Basic route matching for static routes
-- Unit tests for SIMD operations and static route matching
-- Documentation for SIMD implementation approach
+- Unit tests for both SIMD and byte comparison operations
+- Documentation for implementation approach
 
 ### Phase 2: Advanced Routing Features
 
 #### Tasks
 1. **Implement Wildcard Matching**
-   - Add support for single-segment wildcards (StarNode)
+   - Add support for single-segment wildcards (StarNode) with both matching strategies
    - Implement prefix and suffix handling for wildcards
-   - Add path wildcard support (DoubleStarNode)
-   - Implement reversed sub-trie processing for path wildcards as a key component of the matching algorithm
+   - Add path wildcard support (DoubleStarNode) with the reversed sub-trie approach
+   - Implement segment boundary handling for wildcard matching
 
 2. **Implement Parameter Extraction**
    - Add logic to extract parameters during the matching process
@@ -148,10 +164,17 @@ The small-fast-router project aims to create a high-performance HTTP router that
    - Add support for multiple handlers per route
    - Handle edge cases (trailing slashes, empty segments, etc.)
 
+4. **Implement Compile-time Evaluation Process**
+   - Develop evaluation criteria for matching strategy selection
+   - Create benchmarking mechanism for node list performance comparison
+   - Implement strategy selection based on evaluation results
+   - Design serialization format for optimized tries
+
 #### Deliverables
-- Complete SIMD-based route matching implementation
+- Complete adaptive route matching implementation
 - Support for all route pattern types described in the design
 - Parameter extraction functionality
+- Compile-time evaluation mechanism
 - Unit tests for complex route patterns
 
 ### Phase 3: HTTP Server Integration
@@ -193,7 +216,13 @@ The small-fast-router project aims to create a high-performance HTTP router that
    - Analyze performance differences
    - Identify optimization opportunities
 
-3. **Optimize Based on Results**
+3. **Implement Trie Serialization and Deserialization**
+   - Create serialization format for optimized tries
+   - Implement serialization logic for different vector species sizes
+   - Develop runtime deserialization mechanism
+   - Add platform detection for appropriate trie selection
+
+4. **Optimize Based on Results**
    - Implement identified optimizations
    - Re-run benchmarks to verify improvements
    - Document optimization techniques
@@ -202,17 +231,18 @@ The small-fast-router project aims to create a high-performance HTTP router that
 #### Deliverables
 - Benchmark suite
 - Performance comparison report
+- Trie serialization and deserialization implementation
 - Optimized router implementation
 - Documentation of optimization techniques
 
 ## Timeline
 
-### Phase 1: SIMD-Based Core Implementation
-- Duration: 4 weeks
+### Phase 1: Core Matching Implementation
+- Duration: 5 weeks
 - Dependencies: None
 
 ### Phase 2: Advanced Routing Features
-- Duration: 4 weeks
+- Duration: 5 weeks
 - Dependencies: Phase 1
 
 ### Phase 3: HTTP Server Integration
@@ -220,7 +250,7 @@ The small-fast-router project aims to create a high-performance HTTP router that
 - Dependencies: Phase 2
 
 ### Phase 4: Performance Optimization and Benchmarking
-- Duration: 3 weeks
+- Duration: 4 weeks
 - Dependencies: Phase 3
 
 ## Risks and Mitigation
@@ -234,13 +264,19 @@ The small-fast-router project aims to create a high-performance HTTP router that
 
 2. **Performance Bottlenecks**
    - Risk: SIMD operations may not provide expected performance gains in all scenarios
-   - Mitigation: Implement fallback non-SIMD code paths for comparison
+   - Mitigation: Implement byte comparison as an alternative strategy
+   - Mitigation: Use compile-time evaluation to select the optimal strategy
    - Mitigation: Benchmark extensively with different route patterns and payload sizes
 
 3. **Complex Route Patterns**
-   - Risk: Some complex route patterns may be difficult to match efficiently with SIMD
+   - Risk: Some complex route patterns may be difficult to match efficiently
    - Mitigation: Identify edge cases early and design specialized algorithms
-   - Mitigation: Consider hybrid approaches for particularly complex patterns
+   - Mitigation: Use the adaptive strategy to select the best approach for each pattern
+
+4. **Serialization Compatibility**
+   - Risk: Serialized tries may not be compatible across different JVM versions
+   - Mitigation: Implement version checking in the serialization format
+   - Mitigation: Add fallback to runtime trie generation if deserialization fails
 
 ### Project Risks
 
@@ -254,4 +290,6 @@ The small-fast-router project aims to create a high-performance HTTP router that
 
 ## Conclusion
 
-The small-fast-router project aims to create a high-performance HTTP router by leveraging SIMD operations as a fundamental part of its design. By implementing SIMD operations from the beginning and building the router architecture around vector processing, this project will deliver exceptional performance for route matching. The implementation plan ensures that SIMD optimization is not an afterthought but a core aspect of the router's design, aligning with the vision outlined in the design document.
+The small-fast-router project aims to create a high-performance HTTP router by leveraging both SIMD operations and optimized byte comparison methods as fundamental parts of its design. By implementing an adaptive strategy that selects the optimal matching approach based on node characteristics, this project will deliver exceptional performance for route matching across a wide range of patterns and platforms.
+
+The implementation plan ensures that performance optimization is not an afterthought but a core aspect of the router's design, with compile-time evaluation and serialization enabling the best possible runtime performance. This approach aligns with the vision outlined in the design document, creating a router that outperforms existing solutions through innovative techniques and careful optimization.

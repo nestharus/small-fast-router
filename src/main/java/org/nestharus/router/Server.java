@@ -26,8 +26,8 @@ public final class Server {
 
     server.requestHandler(
         request -> {
-          final var requestVector =
-              VectorUtils.createVector(StringAccessUtils.getStringBytes(request.uri()));
+          final var uriBytes = StringAccessUtils.getStringBytes(request.uri());
+          final var requestVector = VectorUtils.createVector(uriBytes);
           final var areEqual = VectorUtils.compareVectors(requestVector, ROUTE_5000_VECTOR);
 
           // Debug output

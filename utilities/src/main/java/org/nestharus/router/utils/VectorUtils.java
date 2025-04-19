@@ -53,10 +53,6 @@ public final class VectorUtils {
    * @return the vector mask
    */
   public static VectorMask<Byte> getMask(final int length) {
-    if (length > VECTOR_LENGTH) {
-      throw new IllegalArgumentException("Invalid mask length: " + length);
-    }
-
     return MASKS[length - 1];
   }
 
@@ -70,11 +66,24 @@ public final class VectorUtils {
    */
   public static ByteVector loadVector(
       @Nonnull final byte[] array, final int offset, final int length) {
-    if (length > VECTOR_LENGTH) {
-      throw new IllegalArgumentException("Invalid length: " + length);
-    }
-
     return ByteVector.fromArray(SPECIES_PREFERRED, array, offset, getMask(length));
+  }
+
+  /**
+   * Compares a vector with a pre-computed route vector.
+   *
+   * @param requestVector the vector from the incoming request path (cannot be null)
+   * @param routeVector the pre-computed route vector (cannot be null)
+   * @return true if the vectors match, false otherwise
+   */
+  public static boolean compareVectors(
+      @Nonnull final ByteVector requestVector,
+      @Nonnull final ByteVector routeVector,
+      final int length) {
+    return requestVector
+            .lanewise(VectorOperators.XOR, routeVector)
+            .reduceLanes(VectorOperators.OR, getMask(length))
+        == 0;
   }
 
   /**

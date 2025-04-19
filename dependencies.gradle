@@ -22,6 +22,7 @@ ext {
     libs = [
             // Core dependencies
             antlrRuntime: "org.antlr:antlr4-runtime:${versions.antlr}",
+            antlrTool: "org.antlr:antlr4:${versions.antlr}",
 
             // Vertx dependencies
             vertxCore: "io.vertx:vertx-core:${versions.vertx}",

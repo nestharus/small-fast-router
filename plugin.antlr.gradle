@@ -1,0 +1,70 @@
+allprojects {
+    plugins.withId('antlr') {
+        def srcPath = projectDir.toString() + '/build/generated/sources/antlr/main/java'
+
+        project.afterEvaluate {
+            sourceSets {
+                main {
+                    java {
+                        srcDir srcPath
+                    }
+                }
+            }
+        }
+
+        def outputPath = file(projectDir.toString() + '/build/generated/sources/antlr/main')
+        def javaPath = file(projectDir.toString() + '/build/generated/sources/antlr/main/java/org/nestharus/parser')
+        def grammarPath = file(projectDir.toString() + '/src/main/resources/grammar')
+
+        generateGrammarSource {
+            outputDirectory = outputPath
+            source = fileTree(dir: grammarPath.absolutePath, include: '*.g4')
+            arguments = [
+                    '-visitor',
+                    '-listener',
+                    '-package', 'org.nestharus.parser',
+                    '-lib', outputDirectory.absolutePath,
+                    '-o', outputDirectory.absolutePath,
+                    '-Xexact-output-dir'
+            ]
+
+            // Store paths as strings at configuration time
+            def paths = [
+                    source: [
+                            routeLexer             : outputPath.absolutePath + '/RouteLexer.java',
+                            routeParser            : outputPath.absolutePath + '/RouteParser.java',
+                            routeParserBaseListener: outputPath.absolutePath + '/RouteParserBaseListener.java',
+                            routeParserBaseVisitor : outputPath.absolutePath + '/RouteParserBaseVisitor.java',
+                            routeParserListener    : outputPath.absolutePath + '/RouteParserListener.java',
+                            routeParserVisitor     : outputPath.absolutePath + '/RouteParserVisitor.java'
+                    ],
+                    target: [
+                            routeLexer             : javaPath.absolutePath + '/RouteLexer.java',
+                            routeParser            : javaPath.absolutePath + '/RouteParser.java',
+                            routeParserBaseListener: javaPath.absolutePath + '/RouteParserBaseListener.java',
+                            routeParserBaseVisitor : javaPath.absolutePath + '/RouteParserBaseVisitor.java',
+                            routeParserListener    : javaPath.absolutePath + '/RouteParserListener.java',
+                            routeParserVisitor     : javaPath.absolutePath + '/RouteParserVisitor.java'
+                    ]
+            ]
+
+            doFirst {
+                new File(javaPath.absolutePath).mkdirs()
+            }
+
+            doLast {
+                paths.source.each { name, sourcePath ->
+                    def sourceFile = new File(sourcePath)
+                    def targetFile = new File(paths.target[name])
+                    if (sourceFile.exists()) {
+                        sourceFile.renameTo(targetFile)
+                    } else {
+                        logger.warn("Source file not found: ${sourcePath}")
+                    }
+                }
+            }
+        }
+
+        compileJava.dependsOn generateGrammarSource
+    }
+}

@@ -1,27 +1,12 @@
-/*
- * Utilities module build file
- */
-
 apply plugin: 'java-library'
 apply plugin: 'io.freefair.lombok'
 apply plugin: 'com.diffplug.spotless'
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-        }
-    }
-    test {
-        java {
-            srcDirs = ['src/test/java']
-        }
-    }
-}
+apply from: '../sourcesets.gradle'
 
 dependencies {
     implementation libs.slf4jApi
-    implementation libs.slf4jSimple  // Added SLF4J Simple implementation for logging
+    implementation libs.slf4jSimple
     implementation libs.jsr305
     implementation libs.guava
 

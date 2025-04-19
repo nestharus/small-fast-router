@@ -3,6 +3,7 @@ package org.nestharus.router.utils;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -41,7 +42,8 @@ public class VectorUtilsTest {
     @Test
     void testGetInvalidMask() {
       assertThrows(
-          IllegalArgumentException.class, () -> VectorUtils.getMask(VectorUtils.VECTOR_LENGTH + 1));
+          ArrayIndexOutOfBoundsException.class,
+          () -> VectorUtils.getMask(VectorUtils.VECTOR_LENGTH + 1));
     }
   }
 
@@ -91,7 +93,7 @@ public class VectorUtilsTest {
           };
 
       assertThrows(
-          IllegalArgumentException.class,
+          ArrayIndexOutOfBoundsException.class,
           () -> VectorUtils.loadVector(bytes, 0, VectorUtils.VECTOR_LENGTH + 1));
     }
 
@@ -154,6 +156,30 @@ public class VectorUtilsTest {
 
       if (result) {
         assertThat(vector2.toArray()).isNotEqualTo(vector1.toArray());
+      }
+    }
+
+    @Test
+    void testComparePartialVectorsEqual() {
+      // "Hello, World" vs "Hello, Worle" (last character different)
+      final var vector1 =
+          VectorUtils.createVector(
+              new byte[] {
+                0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c,
+                0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64
+              });
+      final var vector2 =
+          VectorUtils.createVector(
+              new byte[] {
+                0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c,
+                0x20, 0x57, 0x6f, 0x72, 0x6c, 0x65
+              });
+
+      final var result = VectorUtils.compareVectors(vector1, vector2, 11);
+
+      if (!result) {
+        assertThat(Arrays.copyOf(vector1.toArray(), 11))
+            .isEqualTo(Arrays.copyOf(vector2.toArray(), 11));
       }
     }
   }
