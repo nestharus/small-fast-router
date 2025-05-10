@@ -1,8 +1,3 @@
-/*
- * Source sets configuration for the root project
- */
-
-// Configure source sets for the root project
 sourceSets {
     main {
         java {
@@ -21,5 +16,3 @@ sourceSets {
         }
     }
 }
-
-// Python CI code is handled separately from the Java module structure

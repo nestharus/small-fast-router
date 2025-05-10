@@ -49,3 +49,5 @@
 **/ENV/
 
 .qodo
+
+**/.claude/settings.local.json

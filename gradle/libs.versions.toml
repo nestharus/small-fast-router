@@ -1,0 +1,43 @@
+[versions]
+antlr = "4.13.2"
+vertx = "5.0.0.CR6"
+dagger = "2.56.1"
+netty = "4.2.0.Final"
+slf4j = "2.0.17"
+junit = "5.12.1"
+lombok = "1.18.38"
+geldata = "0.4.0"
+jsr305 = "4.9.3"
+guava = "33.4.7-jre"
+truth = "1.4.4"
+
+[libraries]
+antlr-runtime = { module = "org.antlr:antlr4-runtime", version.ref = "antlr" }
+antlr-tool = { module = "org.antlr:antlr4", version.ref = "antlr" }
+
+# Vertx dependencies
+vertx-core = { module = "io.vertx:vertx-core", version.ref = "vertx" }
+vertx-web = { module = "io.vertx:vertx-web", version.ref = "vertx" }
+vertx-codegen = { module = "io.vertx:vertx-codegen", version.ref = "vertx" }
+vertx-unit = { module = "io.vertx:vertx-unit", version.ref = "vertx" }
+
+# Other dependencies
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+netty = { module = "io.netty:netty-all", version.ref = "netty" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+geldata = { module = "com.geldata:driver", version.ref = "geldata" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
+
+# Tools
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+
+# Annotations
+jsr305 = { module = "com.github.spotbugs:spotbugs-annotations", version.ref = "jsr305" }
+
+[plugins]
+versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
+lombok = { id = "io.freefair.lombok", version = "8.13.1" }
+spotless = { id = "com.diffplug.spotless", version = "7.0.3" }

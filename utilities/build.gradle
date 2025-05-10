@@ -1,15 +1,15 @@
 apply plugin: 'java-library'
-apply plugin: 'io.freefair.lombok'
+// apply plugin: 'io.freefair.lombok'
 apply plugin: 'com.diffplug.spotless'
 
-apply from: '../sourcesets.gradle'
+apply from: '../gradle/conventions/sources.gradle'
 
 dependencies {
-    implementation libs.slf4jApi
-    implementation libs.slf4jSimple
+    implementation libs.slf4j.api
+    implementation libs.slf4j.simple
     implementation libs.jsr305
     implementation libs.guava
 
-    testImplementation libs.junitJupiter
+    testImplementation libs.junit.jupiter
     testImplementation libs.truth
 }

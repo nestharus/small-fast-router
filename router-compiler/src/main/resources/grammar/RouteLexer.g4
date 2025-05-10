@@ -1,38 +1,38 @@
 lexer grammar RouteLexer;
 
 tokens {
-  IDENTIFIER, // Used inside <>
-  INTEGER,    // Used inside []
-  COMMA       // Used inside []
-  // Implicit: EOF, WS, SLASH, GLOB, WILDCARD, OPTIONAL, STATIC_TEXT,
-  // LPAREN, RPAREN, PIPE, BANG, LBRACK, RBRACK, LT, GT
+  IDENTIFIER,
+  INTEGER,
+  COMMA,
+  RBRACK,
+  GT,
+  INVALID_VAR_CHAR  // emitted when <…> contains an illegal character
 }
 
-// --- Default Mode Tokens ---
-SLASH     : '/' ;
-GLOB      : '**' ; // Must be defined before WILDCARD
-WILDCARD  : '*' ;
-OPTIONAL  : '?' ;
-LPAREN    : '(' ;
-RPAREN    : ')' ;
-PIPE      : '|' ;
-BANG      : '!' ;
-LBRACK    : '[' ;
-RBRACK    : ']' ;
-COMMA     : ',' ; // For quantifiers
+// ───────────────────────── Default mode ─────────────────────────
+SLASH       : '/' ;
+DOUBLESTAR  : '**' ;                  // must precede STAR
+STAR        : '*' ;
+QMARK       : '?' ;
+BANG        : '!' ;
+LPAREN      : '(' ;
+RPAREN      : ')' ;
+LBRACK      : '['  -> pushMode(QUANT) ;   // enter [quantifier] mode
+PIPE        : '|' ;
+LT          : '<'  -> pushMode(VARNAME) ;
+STATIC_TEXT : [a-zA-Z0-9\-._~$&'+,;=:@]+ ;   // literal segments
 
-// Static text: Allows letters, numbers, and URL-safe symbols NOT used as operators.
-// Excludes: / * ? ( ) | ! [ ] , < >
-// Includes common safe chars like: _ ~ $ . & ' ; = : % -
-STATIC_TEXT : [a-zA-Z0-9_~$.&';=:%-]+ ;
+// ───────────────────── Var‑name mode  < … > ─────────────────────
+mode VARNAME;
+  VARNAME_IDENTIFIER : [A-Za-z_][A-Za-z0-9_]*  -> type(IDENTIFIER) ;
+  VARNAME_WS         : [ \t\r\n]+              -> skip ;
+  VARNAME_GT         : '>'                     -> popMode, type(GT) ;
+  VARNAME_INVALID_VAR_CHAR   : .               -> type(INVALID_VAR_CHAR) ;
 
-LT        : '<' -> pushMode(VARNAME_MODE) ; // Enter variable name mode
-INTEGER   : [0-9]+ ; // For quantifiers
-
-WS        : [ \t\r\n]+ -> skip ; // Skip whitespace
-
-// --- VarName Mode (inside <>) ---
-mode VARNAME_MODE;
-  VARNAME_IDENTIFIER : [a-zA-Z_][a-zA-Z0-9_]* -> type(IDENTIFIER) ;
-  VARNAME_WS         : [ \t\r\n]+ -> skip ;
-  GT                 : '>' -> popMode ;       // Exit variable name mode
+// ───────────────────── Quantifier mode  [ … ] ───────────────────
+mode QUANT;
+  Q_INT     : [0-9]+ -> type(INTEGER) ;
+  Q_COMMA   : ','    -> type(COMMA) ;
+  Q_RBRACK  : ']'    -> popMode, type(RBRACK) ;
+  Q_WS      : [ \t\r\n]+ -> skip ;
+  QUANT_INVALID_VAR_CHAR   : . -> type(INVALID_VAR_CHAR) ;

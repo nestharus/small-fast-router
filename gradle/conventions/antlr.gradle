@@ -28,7 +28,6 @@ allprojects {
                     '-Xexact-output-dir'
             ]
 
-            // Store paths as strings at configuration time
             def paths = [
                     source: [
                             routeLexer             : outputPath.absolutePath + '/RouteLexer.java',
