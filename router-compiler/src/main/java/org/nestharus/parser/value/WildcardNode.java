@@ -1,21 +1,18 @@
-package org.nestharus.parser.node;
+package org.nestharus.parser.value;
 
 import java.util.Objects;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.nestharus.parser.type.ParserNodeType;
 
-public record WildcardNode(
-    @NonNull ScopeNode containingScope,
-    @Nullable String captureName,
-    @NonNull WildcardInterval interval)
-    implements ParserNode {
+public record WildcardNode(@Nullable String captureName, @NonNull WildcardInterval interval)
+    implements ParserNode, CapturableNode {
   public WildcardNode {
-    Objects.requireNonNull(containingScope, "property :containingScope is required");
     Objects.requireNonNull(interval, "property :interval is required");
   }
 
-  public boolean isCaptured() {
+  public boolean captured() {
     return captureName != null && !captureName.isEmpty();
   }
 
@@ -34,18 +31,11 @@ public record WildcardNode(
   }
 
   public static final class Builder {
-    private ScopeNode containingScope;
-
     private String captureName;
 
     private WildcardInterval interval;
 
     private Builder() {}
-
-    public Builder containingScope(@NonNull ScopeNode containingScope) {
-      this.containingScope = Objects.requireNonNull(containingScope, "Null containingScope");
-      return this;
-    }
 
     public Builder captureName(@Nullable String captureName) {
       this.captureName = captureName;
@@ -58,17 +48,10 @@ public record WildcardNode(
     }
 
     public WildcardNode build() {
-      if (this.containingScope == null || this.interval == null) {
-        StringBuilder missing = new StringBuilder();
-        if (this.containingScope == null) {
-          missing.append(" containingScope");
-        }
-        if (this.interval == null) {
-          missing.append(" interval");
-        }
-        throw new IllegalStateException("Missing required properties:" + missing);
+      if (this.interval == null) {
+        throw new IllegalStateException("Missing required properties:" + " interval");
       }
-      return new WildcardNode(this.containingScope, this.captureName, this.interval);
+      return new WildcardNode(this.captureName, this.interval);
     }
   }
 }

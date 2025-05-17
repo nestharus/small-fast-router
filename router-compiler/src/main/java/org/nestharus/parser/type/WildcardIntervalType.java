@@ -1,4 +1,4 @@
-package org.nestharus.parser.node;
+package org.nestharus.parser.type;
 
 public enum WildcardIntervalType {
   SEGMENT_BOUND,

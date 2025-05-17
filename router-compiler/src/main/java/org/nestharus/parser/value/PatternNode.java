@@ -1,26 +1,26 @@
-package org.nestharus.parser.node;
+package org.nestharus.parser.value;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import com.google.common.collect.Range;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.nestharus.parser.type.ParserNodeType;
+import org.nestharus.parser.type.WildcardIntervalType;
 
 public record PatternNode(
-    @NonNull ScopeNode containingScope,
     boolean negated,
     @Nullable String captureName,
     @Nullable WildcardInterval interval,
     List<ParserNode> children)
-    implements ParserNode, ScopeNode {
+    implements ParserNode, GroupNode<ParserNode>, CapturableNode {
   public PatternNode {
-    Objects.requireNonNull(containingScope, "property :containingScope is required");
     Objects.requireNonNull(children, "property :children is required");
   }
 
-  public boolean isCaptured() {
+  @Override
+  public boolean captured() {
     return captureName != null && !captureName.isEmpty();
   }
 
@@ -39,13 +39,13 @@ public record PatternNode(
   }
 
   public static final class Builder {
-    private ScopeNode containingScope;
-
     private boolean negated;
 
     private String captureName;
 
     private WildcardInterval interval;
+
+    private List<ParserNode> children;
 
     private Builder() {
       negated = false;
@@ -56,34 +56,28 @@ public record PatternNode(
               .build();
     }
 
-    public Builder containingScope(@NonNull ScopeNode containingScope) {
-      this.containingScope = Objects.requireNonNull(containingScope, "Null containingScope");
-      return this;
-    }
-
-    public Builder negated(boolean negated) {
+    public Builder negated(final boolean negated) {
       this.negated = negated;
       return this;
     }
 
-    public Builder captureName(@Nullable String captureName) {
+    public Builder captureName(@Nullable final String captureName) {
       this.captureName = captureName;
       return this;
     }
 
-    public Builder interval(@Nullable WildcardInterval interval) {
+    public Builder interval(@Nullable final WildcardInterval interval) {
       this.interval = interval;
       return this;
     }
 
+    public Builder children(@NonNull final List<ParserNode> children) {
+      this.children = children;
+      return this;
+    }
+
     public PatternNode build() {
-      if (this.containingScope == null) {
-        StringBuilder missing = new StringBuilder();
-        missing.append(" containingScope");
-        throw new IllegalStateException("Missing required properties:" + missing);
-      }
-      return new PatternNode(
-          this.containingScope, this.negated, this.captureName, this.interval, new ArrayList<>());
+      return new PatternNode(this.negated, this.captureName, this.interval, this.children);
     }
   }
 }

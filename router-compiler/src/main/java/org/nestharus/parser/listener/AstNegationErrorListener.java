@@ -1,4 +1,7 @@
-package org.nestharus.parser;
+package org.nestharus.parser.listener;
+
+import org.nestharus.parser.RouteParser;
+import org.nestharus.parser.RouteParserBaseListener;
 
 /**
  * An ANTLR listener responsible for validating negation expressions (`!`) within a route
@@ -11,16 +14,16 @@ package org.nestharus.parser;
  *       NEGATION_WITH_WILDCARD}).
  * </ul>
  *
- * This listener may utilize the results from {@link ExpressionInterpreter} to understand the nature
- * of the expression being negated (e.g., whether it contains an unbounded wildcard). Errors are
- * reported using a {@link SemanticErrorListener}.
+ * This listener may utilize the results from {@link AstExpressionInterpreter} to understand the
+ * nature of the expression being negated (e.g., whether it contains an unbounded wildcard). Errors
+ * are reported using a {@link SemanticErrorListener}.
  *
- * @see ExpressionInterpreter
+ * @see AstExpressionInterpreter
  * @see SemanticErrorListener
  * @see RouteParser.TextExpressionContext
  * @see RouteParser.GroupExpressionContext
  * @see <a href="route_grammar_error_warning_spec.txt">Route Grammar Specification - Section 3.2</a>
  */
-public class NegationListener extends RouteParserBaseListener {
+public class AstNegationErrorListener extends RouteParserBaseListener {
   // Implementation stubs
 }

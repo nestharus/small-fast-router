@@ -1,11 +1,22 @@
 lexer grammar RouteLexer;
 
 tokens {
+  SLASH,
+  STAR,
+  DOUBLESTAR,
+  QMARK,
+  BANG,
+  PIPE,
   IDENTIFIER,
   INTEGER,
   COMMA,
+  LPAREN,
+  RPAREN,
+  LBRACK,
   RBRACK,
+  LT,
   GT,
+  STATIC_TEXT,
   INVALID_VAR_CHAR  // emitted when <…> contains an illegal character
 }
 

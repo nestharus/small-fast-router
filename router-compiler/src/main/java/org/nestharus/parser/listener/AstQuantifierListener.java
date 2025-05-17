@@ -1,4 +1,7 @@
-package org.nestharus.parser;
+package org.nestharus.parser.listener;
+
+import org.nestharus.parser.RouteParser;
+import org.nestharus.parser.RouteParserBaseListener;
 
 /**
  * An ANTLR listener focused on validating route quantifiers (`[...]`). It checks the syntax and
@@ -16,6 +19,6 @@ package org.nestharus.parser;
  * @see RouteParser.QuantifierContext
  * @see <a href="route_grammar_error_warning_spec.txt">Route Grammar Specification - Section 3.1</a>
  */
-public class QuantifierListener extends RouteParserBaseListener {
+public class AstQuantifierListener extends RouteParserBaseListener {
   // Implementation stubs
 }

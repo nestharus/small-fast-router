@@ -1,13 +1,14 @@
-package org.nestharus.parser;
+package org.nestharus.parser.listener;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.nestharus.parser.ExpressionReducer;
 
 /**
  * Transforms ANTLR {@link ParseTree} nodes representing route expressions into a simplified,
  * intermediate semantic representation. This representation captures the *meaning* of the
  * expressions (e.g., the set of characters or segments they match) in a form that is easier for
- * subsequent pipeline stages like validation (e.g., {@link NegationListener}) and optimization
- * ({@link ExpressionReducer}) to process.
+ * subsequent pipeline stages like validation (e.g., {@link AstNegationErrorListener}) and
+ * optimization ({@link ExpressionReducer}) to process.
  *
  * <p>For example, it might convert a {@code STATIC_TEXT} node into an object representing that
  * literal string, a wildcard node into an object representing a character set, or a group node into
@@ -15,9 +16,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
  * complex features like negation and for enabling effective expression reduction.
  *
  * @see ExpressionReducer
- * @see NegationListener
+ * @see AstNegationErrorListener
  */
-public class ExpressionInterpreter { // Or could be a Listener/Visitor
+public class AstExpressionInterpreter { // Or could be a Listener/Visitor
   // Implementation stubs
 
   /**

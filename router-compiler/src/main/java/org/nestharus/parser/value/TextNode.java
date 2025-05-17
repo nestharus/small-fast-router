@@ -1,25 +1,23 @@
-package org.nestharus.parser.node;
+package org.nestharus.parser.value;
 
 import java.util.Objects;
 
 import com.google.common.collect.Range;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.nestharus.parser.type.ParserNodeType;
+import org.nestharus.parser.type.WildcardIntervalType;
 
 public record TextNode(
-    @NonNull ScopeNode containingScope,
-    boolean negated,
-    @Nullable String captureName,
-    WildcardInterval interval,
-    @NonNull String text)
-    implements ParserNode {
+    boolean negated, @Nullable String captureName, WildcardInterval interval, @NonNull String text)
+    implements ParserNode, CapturableNode {
   public TextNode {
-    Objects.requireNonNull(containingScope, "property :containingScope is required");
     Objects.requireNonNull(interval, "property :interval is required");
     Objects.requireNonNull(text, "property :text is required");
   }
 
-  public boolean isCaptured() {
+  @Override
+  public boolean captured() {
     return captureName != null && !captureName.isEmpty();
   }
 
@@ -38,8 +36,6 @@ public record TextNode(
   }
 
   public static final class Builder {
-    private ScopeNode containingScope;
-
     private boolean negated;
 
     private String captureName;
@@ -55,11 +51,6 @@ public record TextNode(
               .interval(Range.closed(1, 1))
               .type(WildcardIntervalType.SEGMENT_BOUND)
               .build();
-    }
-
-    public Builder containingScope(@NonNull ScopeNode containingScope) {
-      this.containingScope = Objects.requireNonNull(containingScope, "Null containingScope");
-      return this;
     }
 
     public Builder negated(boolean negated) {
@@ -83,18 +74,10 @@ public record TextNode(
     }
 
     public TextNode build() {
-      if (this.containingScope == null || this.text == null) {
-        StringBuilder missing = new StringBuilder();
-        if (this.containingScope == null) {
-          missing.append(" containingScope");
-        }
-        if (this.text == null) {
-          missing.append(" text");
-        }
-        throw new IllegalStateException("Missing required properties:" + missing);
+      if (this.text == null) {
+        throw new IllegalStateException("Missing required properties:" + " text");
       }
-      return new TextNode(
-          this.containingScope, this.negated, this.captureName, this.interval, this.text);
+      return new TextNode(this.negated, this.captureName, this.interval, this.text);
     }
   }
 }

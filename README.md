@@ -19,7 +19,7 @@ See the [current status document](docs/current-status.md) for more details on im
 
 ## Prerequisites
 
-- Java 23 or higher (required for Vector API support)
+- Java 24 or higher (required for Vector API support)
 - Gradle 8.11.1 or higher
 
 ## Getting Started
@@ -35,6 +35,11 @@ cd small-fast-router
 
 ```bash
 ./gradlew build
+```
+
+### Rebuild Grammar
+```bash
+./gradlew :router-compiler:compileJava --no-build-cache
 ```
 
 ### Run Tests

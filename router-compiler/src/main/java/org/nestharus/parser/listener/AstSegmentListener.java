@@ -1,4 +1,7 @@
-package org.nestharus.parser;
+package org.nestharus.parser.listener;
+
+import org.nestharus.parser.RouteParser;
+import org.nestharus.parser.RouteParserBaseListener;
 
 /**
  * An ANTLR listener that processes individual route segments (the parts between '/'). Its specific
@@ -15,6 +18,6 @@ package org.nestharus.parser;
  * @see RouteParser.ElementContext
  * @see <a href="route_grammar_error_warning_spec.txt">Route Grammar Specification - Section 2.2</a>
  */
-public class SegmentListener extends RouteParserBaseListener {
+public class AstSegmentListener extends RouteParserBaseListener {
   // Implementation stubs
 }

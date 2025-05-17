@@ -1,9 +1,10 @@
-package org.nestharus.parser.node;
+package org.nestharus.parser.value;
 
 import java.util.Objects;
 
 import com.google.common.collect.Range;
 import org.jspecify.annotations.NonNull;
+import org.nestharus.parser.type.WildcardIntervalType;
 
 public record WildcardInterval(
     Range<@NonNull Integer> interval, @NonNull WildcardIntervalType type) {

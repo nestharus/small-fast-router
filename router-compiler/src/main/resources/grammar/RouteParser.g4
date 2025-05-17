@@ -3,8 +3,9 @@ parser grammar RouteParser;
 options { tokenVocab = RouteLexer; }
 
 main
-    : slash element* EOF
-    | slash branch slash? EOF
+    : (slash element)+ slash? EOF
+    | slash branchExpression slash? EOF
+    | slash
     ;
 
 element
@@ -12,18 +13,14 @@ element
     | textExpression
     | groupExpression
     | starExpression
-    | slash
-    ;
-
-branchElement
-    : starPattern
-    | textExpression
-    | groupExpression
-    | starExpression
     ;
 
 branch
-    : branchElement+ (PIPE branchElement+)+
+    : element+
+    ;
+
+branchExpression
+    : branch (PIPE branch)+
     ;
 
 textExpression
@@ -43,7 +40,7 @@ starExpression
     ;
 
 group
-    : LPAREN ((element+)|branch) RPAREN
+    : LPAREN ((element+)|branchExpression) RPAREN
     ;
 
 capture
