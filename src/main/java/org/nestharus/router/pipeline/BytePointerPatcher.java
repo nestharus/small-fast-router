@@ -1,11 +1,7 @@
 package org.nestharus.router.pipeline;
 
-import java.util.Map;
-
-import org.nestharus.router.collections.PrefixCompressedTrieNode;
-import org.nestharus.router.collections.trie.DfaTriePointerNode;
-
 public final class BytePointerPatcher {
+  /*
   private BytePointerPatcher() {}
 
   public static void patch(
@@ -22,4 +18,5 @@ public final class BytePointerPatcher {
       n.childEntries().forEach(e -> patchRec(e, off));
     }
   }
+   */
 }

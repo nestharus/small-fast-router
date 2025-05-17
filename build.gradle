@@ -12,6 +12,7 @@ apply from: 'gradle/conventions/spotless.gradle'
 apply from: 'gradle/conventions/antlr.gradle'
 apply from: 'gradle/conventions/sources.gradle'
 apply from: 'gradle/conventions/version.gradle'
+apply from: 'gradle/conventions/testing.gradle'
 
 version = projectVersion
 
@@ -47,8 +48,6 @@ dependencies {
     implementation libs.guava
 
     testImplementation libs.vertx.unit
-    testImplementation libs.truth
-    testImplementation libs.junit.jupiter
 
     // Module dependencies
     implementation project(':utilities')

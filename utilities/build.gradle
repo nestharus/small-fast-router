@@ -2,7 +2,8 @@ apply plugin: 'java-library'
 // apply plugin: 'io.freefair.lombok'
 apply plugin: 'com.diffplug.spotless'
 
-apply from: '../gradle/conventions/sources.gradle'
+apply from: rootProject.file('gradle/conventions/sources.gradle')
+apply from: rootProject.file('gradle/conventions/testing.gradle')
 
 dependencies {
     implementation libs.slf4j.api

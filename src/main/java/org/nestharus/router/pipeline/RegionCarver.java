@@ -1,15 +1,7 @@
 package org.nestharus.router.pipeline;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.nestharus.router.collections.PrefixCompressedTrieNode;
-import org.nestharus.router.collections.trie.TriePointerNode;
-
 public final class RegionCarver {
-
-  /* -------- region containers -------- */
+  /*
   public static final class PureByteRegion {
     private final List<PrefixCompressedTrieNode> nodes = new ArrayList<>();
 
@@ -26,7 +18,6 @@ public final class RegionCarver {
     }
   }
 
-  /* -------- placeholder node kinds (builder‑time only) -------- */
   public sealed interface Placeholder permits BytePlaceholder, ArbPlaceholder {}
 
   public record BytePlaceholder(PureByteRegion region) implements Placeholder {}
@@ -49,7 +40,6 @@ public final class RegionCarver {
     }
   }
 
-  /* -------- carve result -------- */
   public record CarveResult(
       PrefixCompressedTrieNode root,
       List<PureByteRegion> byteRegs,
@@ -57,17 +47,15 @@ public final class RegionCarver {
 
   private RegionCarver() {}
 
-  /* -------- public entry -------- */
   public static CarveResult carve(PrefixCompressedTrieNode triRoot) {
     List<PureByteRegion> byteRegs = new ArrayList<>();
     List<ArbitraryRegion> arbRegs = new ArrayList<>();
 
-    PrefixCompressedTrieNode patched = carveRec(triRoot, /*inByte*/ false, byteRegs, arbRegs);
+    PrefixCompressedTrieNode patched = carveRec(triRoot, false, byteRegs, arbRegs);
 
     return new CarveResult(patched, byteRegs, arbRegs);
   }
 
-  /* -------- recursive helper -------- */
   private static PrefixCompressedTrieNode carveRec(
       PrefixCompressedTrieNode node,
       boolean inByte,
@@ -88,7 +76,6 @@ public final class RegionCarver {
       return new ArbPlaceholder(reg);
     }
 
-    /* still inside same region –– clone node & recurse children */
     PrefixCompressedTrieNode clone =
         node.isTerminal()
             ? PrefixCompressedTrieNode.terminal(node.label, node.priority())
@@ -102,7 +89,6 @@ public final class RegionCarver {
     return clone;
   }
 
-  /* add all byte‑descendants */
   private static void dfsByte(PrefixCompressedTrieNode n, PureByteRegion r) {
     r.nodes.add(n);
     n.childEntries().stream()
@@ -112,7 +98,6 @@ public final class RegionCarver {
         .forEach(ch -> dfsByte(ch, r));
   }
 
-  /* add all non‑byte descendants */
   private static void dfsArb(PrefixCompressedTrieNode n, ArbitraryRegion r) {
     r.nodes.add(n);
     n.childEntries().stream()
@@ -121,4 +106,5 @@ public final class RegionCarver {
         .filter(ch -> ch.label.length == 0) // ARB kind
         .forEach(ch -> dfsArb(ch, r));
   }
+  */
 }

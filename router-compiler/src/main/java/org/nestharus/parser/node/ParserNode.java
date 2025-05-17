@@ -1,7 +1,7 @@
 package org.nestharus.parser.node;
 
 public interface ParserNode {
-  ParserNodeType getType();
+  ParserNodeType type();
 
-  ScopeNode getContainingScope();
+  ScopeNode containingScope();
 }

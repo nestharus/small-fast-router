@@ -1,18 +1,10 @@
 package org.nestharus.router.pipeline;
 
-import java.util.Map;
-
-import org.nestharus.router.collections.trie.DfaTriePointerNode;
-import org.nestharus.router.collections.trie.TriePointerNode;
-
 public final class RootPatcher {
 
   private RootPatcher() {}
 
-  /**
-   * Replace placeholder objects with real DfaPtrNode / ArbPtrNode. Root is
-   * RegionCarver.RootEdgeTable which already stores PointerNode[].
-   */
+  /*
   public static TriePointerNode patch(
       TriePointerNode rootPlaceholder,
       Map<RegionCarver.PureByteRegion, Integer> offMap,
@@ -43,4 +35,5 @@ public final class RootPatcher {
       return table[ub];
     }
   }
+   */
 }

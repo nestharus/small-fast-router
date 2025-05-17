@@ -3,7 +3,8 @@ apply plugin: 'java-library'
 apply plugin: 'com.diffplug.spotless'
 apply plugin: 'antlr'
 
-apply from: '../gradle/conventions/sources.gradle'
+apply from: rootProject.file('gradle/conventions/sources.gradle')
+apply from: rootProject.file('gradle/conventions/testing.gradle')
 
 dependencies {
     implementation libs.slf4j.api

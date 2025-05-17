@@ -5,6 +5,7 @@ dagger = "2.56.1"
 netty = "4.2.0.Final"
 slf4j = "2.0.17"
 junit = "5.12.1"
+junit-platform = "1.12.2"
 lombok = "1.18.38"
 geldata = "0.4.0"
 jsr305 = "4.9.3"
@@ -28,6 +29,7 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 geldata = { module = "com.geldata:driver", version.ref = "geldata" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 

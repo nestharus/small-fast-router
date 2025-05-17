@@ -1,9 +1,7 @@
 package org.nestharus.router.matcher;
 
-import org.nestharus.router.collections.trie.ByteTrieNodeI;
-import org.nestharus.router.collections.trie.TrieNode;
-
 public final class TrieMatcher {
+  /*
   private TrieMatcher() {}
 
   public static int match(TrieNode root, byte[] in, int pos) {
@@ -16,4 +14,6 @@ public final class TrieMatcher {
     }
     return -1;
   }
+
+   */
 }

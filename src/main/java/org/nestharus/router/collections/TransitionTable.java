@@ -1,10 +1,5 @@
 package org.nestharus.router.collections;
 
-import java.lang.foreign.MemorySegment;
-import java.lang.foreign.ValueLayout;
-import java.util.BitSet;
-import java.util.Objects;
-
 /**
  * Immutable, runtime‑only representation of ONE packed DFA region.
  *
@@ -13,10 +8,7 @@ import java.util.Objects;
  * @param <T> type of user payload (not yet used, but kept for future tags)
  */
 public final class TransitionTable<T> {
-
-  /* -------------------------------------------------- *
-   *  Binary layout description – single source of truth
-   * -------------------------------------------------- */
+  /*
   public static final class Layout {
     public static final int TRANSITION_ENTRY_SIZE = 3; // 24‑bit offset
     public static final int ACCEPT_FLAG_SIZE = 1; // 1 byte footer
@@ -26,26 +18,14 @@ public final class TransitionTable<T> {
     private Layout() {}
   }
 
-  /* -------------------------------------------------- *
-   *  Instance fields
-   * -------------------------------------------------- */
   private final MemorySegment segment;
   private final BitSet startBitmap; // bitmap of first bytes accepted by DFA
 
-  /* package‑private */ TransitionTable(MemorySegment segment, BitSet bitmap) {
+  TransitionTable(MemorySegment segment, BitSet bitmap) {
     this.segment = Objects.requireNonNull(segment, "segment");
     this.startBitmap = (BitSet) bitmap.clone();
   }
 
-  /* -------------------------------------------------- *
-   *  Public matcher
-   * -------------------------------------------------- */
-
-  /**
-   * Match {@code input[offset … limit)} against this DFA.
-   *
-   * @return index <em>after</em> the longest match, or ‑1 if no prefix matches.
-   */
   public int match(byte[] input, int offset, int limit) {
     if (offset >= limit) return -1;
 
@@ -76,10 +56,6 @@ public final class TransitionTable<T> {
     return best;
   }
 
-  /* -------------------------------------------------- *
-   *  Accessors / helpers
-   * -------------------------------------------------- */
-
   public MemorySegment segment() {
     return segment;
   }
@@ -93,4 +69,6 @@ public final class TransitionTable<T> {
     long states = segment.byteSize() / Layout.STATE_SIZE;
     return "TransitionTable[states=" + states + ", bytes=" + segment.byteSize() + "]";
   }
+
+   */
 }

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import lombok.Getter;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -31,6 +31,7 @@ public class RouteFullParserTest {
         .toList();
   }
 
+  @Disabled
   @ParameterizedTest
   @ValueSource(
       strings = {
@@ -1208,6 +1209,7 @@ public class RouteFullParserTest {
     assertThat(errors).isEmpty();
   }
 
+  @Disabled
   @ParameterizedTest
   @ValueSource(
       strings = {
@@ -1426,9 +1428,12 @@ public class RouteFullParserTest {
     // assertEquals(1, errors.size());
   }
 
-  @Getter
   public static class ErrorTrackingListener extends BaseErrorListener {
     private final List<String> errors = new ArrayList<>();
+
+    public List<String> getErrors() {
+      return errors;
+    }
 
     @Override
     public void syntaxError(

@@ -1,14 +1,10 @@
 package org.nestharus.router;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-@Getter
 public class HttpRouter2<T extends HttpParameters> {
+  /*
   public interface RouteNode {
     String toString();
   }
@@ -163,4 +159,5 @@ public class HttpRouter2<T extends HttpParameters> {
       }
     }.visit(tree);
   }
+   */
 }

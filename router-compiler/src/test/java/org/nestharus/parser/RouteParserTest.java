@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import lombok.Getter;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -145,7 +144,6 @@ public class RouteParserTest {
     assertThat(errors).isNotEmpty();
   }
 
-  @Getter
   public static class ErrorTrackingListener extends BaseErrorListener {
     private final List<String> errors = new ArrayList<>();
 
@@ -158,6 +156,10 @@ public class RouteParserTest {
         String msg,
         RecognitionException e) {
       errors.add("Syntax error at line " + line + ":" + charPositionInLine + " - " + msg);
+    }
+
+    public List<String> getErrors() {
+      return errors;
     }
   }
 }

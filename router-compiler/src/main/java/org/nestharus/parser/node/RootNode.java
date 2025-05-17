@@ -3,21 +3,18 @@ package org.nestharus.parser.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
-@Getter
-public class RootNode implements ParserNode, ScopeNode {
-  private final List<ParserNode> children = new ArrayList<>();
+public record RootNode(List<ParserNode> children) implements ParserNode, ScopeNode {
+  RootNode() {
+    this(new ArrayList<>());
+  }
 
   @Override
-  public ParserNodeType getType() {
+  public ParserNodeType type() {
     return ParserNodeType.ROOT;
   }
 
   @Override
-  public ScopeNode getContainingScope() {
+  public ScopeNode containingScope() {
     return null;
   }
 }

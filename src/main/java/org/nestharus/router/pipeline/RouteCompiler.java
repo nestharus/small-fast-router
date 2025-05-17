@@ -1,14 +1,7 @@
 package org.nestharus.router.pipeline;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.nestharus.router.collections.PrefixCompressedTrieNode;
-
 public final class RouteCompiler {
-
+  /*
   public static PrefixCompressedTrieNode buildTrie(List<String> routes) {
     Map<String, Integer> prio = RouteScorer.score(routes);
     PrefixCompressedTrieNode root = PrefixCompressedTrieNode.nonTerminal(new byte[0]);
@@ -20,7 +13,6 @@ public final class RouteCompiler {
     return root;
   }
 
-  /* recursive insert w/ "hasDfaAncestor" flag */
   private static void insert(
       PrefixCompressedTrieNode node, byte[] route, int pos, int priority, boolean hasDfaAnc) {
     if (pos >= route.length) {
@@ -59,4 +51,5 @@ public final class RouteCompiler {
     for (int i = 0; i < n; i++) if (a[i] != b[ob + i]) return i;
     return n;
   }
+  */
 }

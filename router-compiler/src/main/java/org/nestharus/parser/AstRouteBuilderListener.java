@@ -63,8 +63,8 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
 
     final var interval =
         WildcardInterval.builder()
-            .type(WildcardIntervalType.SEGMENT_BOUND)
             .interval(calculateRange(null, isOptional))
+            .type(WildcardIntervalType.SEGMENT_BOUND)
             .build();
 
     final var pattern =
@@ -76,7 +76,7 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
             .build();
 
     scopeStack.push(pattern);
-    containingScope.getChildren().add(pattern);
+    containingScope.children().add(pattern);
   }
 
   @Override
@@ -112,7 +112,7 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
             .build();
 
     scopeStack.push(pattern);
-    containingScope.getChildren().add(pattern);
+    containingScope.children().add(pattern);
   }
 
   @Override
@@ -127,7 +127,7 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
     final var branch = BranchNode.builder().containingScope(containingScope).build();
 
     scopeStack.push(branch);
-    containingScope.getChildren().add(branch);
+    containingScope.children().add(branch);
   }
 
   @Override
@@ -142,7 +142,7 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
     final var branches = BranchNode.builder().containingScope(containingScope).build();
 
     scopeStack.push(branches);
-    containingScope.getChildren().add(branches);
+    containingScope.children().add(branches);
   }
 
   @Override
@@ -174,7 +174,7 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
             .text(text)
             .build();
 
-    containingScope.getChildren().add(node);
+    containingScope.children().add(node);
   }
 
   // star capture? quantifier? QMARK?
@@ -191,8 +191,8 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
 
     final var interval =
         WildcardInterval.builder()
-            .type(intervalType)
             .interval(calculateRange(ctx.quantifier(), isOptional))
+            .type(intervalType)
             .build();
 
     final var node =
@@ -202,7 +202,7 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
             .interval(interval)
             .build();
 
-    containingScope.getChildren().add(node);
+    containingScope.children().add(node);
   }
 
   @Override
@@ -212,6 +212,6 @@ public class AstRouteBuilderListener extends RouteParserBaseListener {
     final var node =
         TextNode.builder().containingScope(containingScope).text(ctx.SLASH().getText()).build();
 
-    containingScope.getChildren().add(node);
+    containingScope.children().add(node);
   }
 }
