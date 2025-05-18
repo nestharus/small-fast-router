@@ -18,7 +18,7 @@ public class WildcardNodeMapper {
     final var isOptional = isOptionalToken.isPresent();
     final var starNodeType = StarNodeMapper.typeFromParseRule(ctx.star());
     final var intervalType = WildcardIntervalTypeMapper.fromStarNodeType(starNodeType);
-    final var intervalRange = RangeMapper.fromRangeContext(ctx.quantifier(), isOptional, false);
+    final var intervalRange = RangeNodeMapper.fromRangeContext(ctx.quantifier(), isOptional, false);
 
     return WildcardNode.builder()
         .captureName(StringNodeMapper.fromToken(captureNameToken))

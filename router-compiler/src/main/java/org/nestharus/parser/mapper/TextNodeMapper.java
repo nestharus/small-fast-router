@@ -19,7 +19,7 @@ public class TextNodeMapper {
     final var textToken = ctx.STATIC_TEXT().getSymbol();
 
     final var isOptional = isOptionalToken.isPresent();
-    final var intervalRange = RangeMapper.fromRangeContext(null, isOptional, true);
+    final var intervalRange = RangeNodeMapper.fromRangeContext(null, isOptional, true);
 
     return TextNode.builder()
         .negated(BooleanNodeMapper.fromToken(isNegatedToken))

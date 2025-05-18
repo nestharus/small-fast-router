@@ -12,7 +12,7 @@ import org.nestharus.parser.RouteParser;
 import org.nestharus.parser.exception.TokenMapperException;
 import org.nestharus.parser.value.RangeNode;
 
-public class RangeMapper {
+public class RangeNodeMapper {
   public static List<RangeNode> fromRangeContext(
       final RouteParser.QuantifierContext ctx, final boolean isOptional, final boolean isStatic)
       throws TokenMapperException {
@@ -52,7 +52,7 @@ public class RangeMapper {
       final RouteParser.QuantifierBranchExpressionContext ctx) throws TokenMapperException {
     try {
       return ctx.quantifierElement().stream()
-          .map(rule -> Failable.get(() -> RangeMapper.fromQuantifierElement(rule)))
+          .map(rule -> Failable.get(() -> RangeNodeMapper.fromQuantifierElement(rule)))
           .toList();
     } catch (final RuntimeException exception) {
       throw (TokenMapperException) exception.getCause();

@@ -21,7 +21,7 @@ public class PatternNodeMapper {
     final var starNodeType = StarNodeMapper.typeFromParseRule(ctx.star());
     final var intervalType = WildcardIntervalTypeMapper.fromStarNodeType(starNodeType);
     final var isOptional = isOptionalToken.isPresent();
-    final var intervalRange = RangeMapper.fromRangeContext(ctx.quantifier(), isOptional, false);
+    final var intervalRange = RangeNodeMapper.fromRangeContext(ctx.quantifier(), isOptional, false);
 
     return PatternNode.builder()
         .negated(BooleanNodeMapper.fromToken(isNegatedToken))
@@ -40,7 +40,7 @@ public class PatternNodeMapper {
         Optional.ofNullable(ctx.capture()).map(token -> token.IDENTIFIER().getSymbol());
 
     final var isOptional = isOptionalToken.isPresent();
-    final var intervalRange = RangeMapper.fromRangeContext(null, isOptional, false);
+    final var intervalRange = RangeNodeMapper.fromRangeContext(null, isOptional, false);
 
     return PatternNode.builder()
         .negated(BooleanNodeMapper.fromToken(isNegatedToken))

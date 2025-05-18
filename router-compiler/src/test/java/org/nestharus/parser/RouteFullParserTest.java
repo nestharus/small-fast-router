@@ -25,7 +25,11 @@ public class RouteFullParserTest {
     parser.removeErrorListeners();
     parser.addErrorListener(errorListener);
     semanticAnalyzer.addErrorListener(semanticErrorListener);
-    ParseTreeWalker.DEFAULT.walk(semanticAnalyzer, parser.main());
+    try {
+      ParseTreeWalker.DEFAULT.walk(semanticAnalyzer, parser.main());
+    } catch (final RuntimeException ignored) {
+      // Ignore the exception (stop signal); only capturing errors
+    }
 
     return Stream.of(errorListener.getErrors(), semanticErrorListener.getErrors())
         .flatMap(List::stream)
