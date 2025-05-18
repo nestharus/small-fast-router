@@ -1,24 +1,30 @@
 package org.nestharus.parser.value;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.collect.Range;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.nestharus.parser.type.ParserNodeType;
 import org.nestharus.parser.type.WildcardIntervalType;
 
 public record TextNode(
-    boolean negated, @Nullable String captureName, WildcardInterval interval, @NonNull String text)
+    @NonNull BooleanNode negated,
+    @NonNull Optional<StringNode> captureName,
+    @NonNull WildcardInterval interval,
+    @NonNull StringNode text)
     implements ParserNode, CapturableNode {
   public TextNode {
+    Objects.requireNonNull(negated, "property :negated is required");
+    Objects.requireNonNull(captureName, "property :captureName is required");
     Objects.requireNonNull(interval, "property :interval is required");
     Objects.requireNonNull(text, "property :text is required");
   }
 
   @Override
   public boolean captured() {
-    return captureName != null && !captureName.isEmpty();
+    return captureName.isPresent();
   }
 
   @Override
@@ -36,29 +42,34 @@ public record TextNode(
   }
 
   public static final class Builder {
-    private boolean negated;
+    private BooleanNode negated;
 
-    private String captureName;
+    private Optional<StringNode> captureName;
 
     private WildcardInterval interval;
 
-    private String text;
+    private StringNode text;
 
     private Builder() {
-      negated = false;
+      negated = new BooleanNode(false, Optional.empty());
       interval =
           WildcardInterval.builder()
-              .interval(Range.closed(1, 1))
+              .interval(
+                  List.of(
+                      RangeNode.builder()
+                          .value(Range.singleton(1))
+                          .sourceNode(Optional.empty())
+                          .build()))
               .type(WildcardIntervalType.SEGMENT_BOUND)
               .build();
     }
 
-    public Builder negated(boolean negated) {
+    public Builder negated(BooleanNode negated) {
       this.negated = negated;
       return this;
     }
 
-    public Builder captureName(@Nullable String captureName) {
+    public Builder captureName(@NonNull Optional<StringNode> captureName) {
       this.captureName = captureName;
       return this;
     }
@@ -68,14 +79,14 @@ public record TextNode(
       return this;
     }
 
-    public Builder text(@NonNull String text) {
-      this.text = Objects.requireNonNull(text, "Null text");
+    public Builder text(@NonNull StringNode text) {
+      this.text = Objects.requireNonNull(text, "Null value");
       return this;
     }
 
     public TextNode build() {
       if (this.text == null) {
-        throw new IllegalStateException("Missing required properties:" + " text");
+        throw new IllegalStateException("Missing required properties:" + " value");
       }
       return new TextNode(this.negated, this.captureName, this.interval, this.text);
     }

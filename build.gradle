@@ -46,6 +46,7 @@ dependencies {
     implementation libs.geldata
     implementation libs.jsr305
     implementation libs.guava
+    implementation libs.apache.commons.lang3
 
     testImplementation libs.vertx.unit
 

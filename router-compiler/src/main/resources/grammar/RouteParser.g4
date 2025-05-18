@@ -3,9 +3,9 @@ parser grammar RouteParser;
 options { tokenVocab = RouteLexer; }
 
 main
-    : (slash element)+ slash? EOF
+    : (slash element+)+ slash? EOF
     | slash branchExpression slash? EOF
-    | slash
+    | slash EOF
     ;
 
 element
@@ -49,6 +49,11 @@ capture
 
 quantifier
     : LBRACK quantifierElement RBRACK
+    | LBRACK quantifierBranchExpression RBRACK
+    ;
+
+quantifierBranchExpression
+    : quantifierElement (PIPE quantifierElement)+
     ;
 
 quantifierElement

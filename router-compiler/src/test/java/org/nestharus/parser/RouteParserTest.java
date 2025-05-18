@@ -64,6 +64,7 @@ public class RouteParserTest {
         "/(a)<name>",
         "/a<name>|b<name>",
         "/*[1]",
+        "/*[0|2,5]",
         "/**[1]",
         "/*<name>[1]?",
         "/*<name>?",
@@ -81,7 +82,20 @@ public class RouteParserTest {
       })
   public void testValid(final String input) {
     final var errors = parseInput(input);
-    assertThat(errors).isEmpty();
+    try {
+      assertThat(errors).isEmpty();
+    } catch (final AssertionError e) {
+      final RouteLexer lexer = new RouteLexer(CharStreams.fromString(input));
+      final CommonTokenStream tokens = new CommonTokenStream(lexer);
+      tokens.fill();
+      tokens.getTokens().stream()
+          .map(
+              token ->
+                  RouteLexer.VOCABULARY.getSymbolicName(token.getType()) + ": " + token.getText())
+          .forEach(System.out::println);
+
+      throw e;
+    }
   }
 
   @ParameterizedTest
@@ -141,7 +155,20 @@ public class RouteParserTest {
       })
   public void testInvalid(final String input) {
     final var errors = parseInput(input);
-    assertThat(errors).isNotEmpty();
+    try {
+      assertThat(errors).isNotEmpty();
+    } catch (final AssertionError e) {
+      final RouteLexer lexer = new RouteLexer(CharStreams.fromString(input));
+      final CommonTokenStream tokens = new CommonTokenStream(lexer);
+      tokens.fill();
+      tokens.getTokens().stream()
+          .map(
+              token ->
+                  RouteLexer.VOCABULARY.getSymbolicName(token.getType()) + ": " + token.getText())
+          .forEach(System.out::println);
+
+      throw e;
+    }
   }
 
   public static class ErrorTrackingListener extends BaseErrorListener {

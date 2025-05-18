@@ -8,8 +8,8 @@ public class HttpRouter2Test {
   //    @Test
   //    void singleStaticText() {
   //      HttpRouter2<HttpParameters> router = new HttpRouter2<>();
-  //      router.add("/text", null);
-  //      assertEquals(List.of("text"), router.getNodes().stream().map(Object::toString).toList());
+  //      router.add("/value", null);
+  //      assertEquals(List.of("value"), router.getNodes().stream().map(Object::toString).toList());
   //    }
   //
   //    @Test

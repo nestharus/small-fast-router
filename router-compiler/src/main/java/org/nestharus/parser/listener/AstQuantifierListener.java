@@ -1,7 +1,9 @@
 package org.nestharus.parser.listener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.nestharus.parser.RouteParser;
-import org.nestharus.parser.RouteParserBaseListener;
 
 /**
  * An ANTLR listener focused on validating route quantifiers (`[...]`). It checks the syntax and
@@ -19,6 +21,14 @@ import org.nestharus.parser.RouteParserBaseListener;
  * @see RouteParser.QuantifierContext
  * @see <a href="route_grammar_error_warning_spec.txt">Route Grammar Specification - Section 3.1</a>
  */
-public class AstQuantifierListener extends RouteParserBaseListener {
-  // Implementation stubs
+public class AstQuantifierListener extends AstBaseListener {
+  private final List<SemanticErrorListener> errorListeners;
+
+  public AstQuantifierListener() {
+    this.errorListeners = new ArrayList<>();
+  }
+
+  public void addErrorListener(final SemanticErrorListener listener) {
+    errorListeners.add(listener);
+  }
 }

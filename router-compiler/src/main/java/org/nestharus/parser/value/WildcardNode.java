@@ -1,19 +1,20 @@
 package org.nestharus.parser.value;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.nestharus.parser.type.ParserNodeType;
 
-public record WildcardNode(@Nullable String captureName, @NonNull WildcardInterval interval)
+public record WildcardNode(
+    @NonNull Optional<StringNode> captureName, @NonNull WildcardInterval interval)
     implements ParserNode, CapturableNode {
   public WildcardNode {
     Objects.requireNonNull(interval, "property :interval is required");
   }
 
   public boolean captured() {
-    return captureName != null && !captureName.isEmpty();
+    return captureName.isPresent();
   }
 
   @Override
@@ -31,13 +32,13 @@ public record WildcardNode(@Nullable String captureName, @NonNull WildcardInterv
   }
 
   public static final class Builder {
-    private String captureName;
+    private Optional<StringNode> captureName;
 
     private WildcardInterval interval;
 
     private Builder() {}
 
-    public Builder captureName(@Nullable String captureName) {
+    public Builder captureName(@NonNull Optional<StringNode> captureName) {
       this.captureName = captureName;
       return this;
     }

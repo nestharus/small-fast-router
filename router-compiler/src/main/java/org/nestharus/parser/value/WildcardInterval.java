@@ -1,16 +1,15 @@
 package org.nestharus.parser.value;
 
+import java.util.List;
 import java.util.Objects;
 
-import com.google.common.collect.Range;
 import org.jspecify.annotations.NonNull;
 import org.nestharus.parser.type.WildcardIntervalType;
 
-public record WildcardInterval(
-    Range<@NonNull Integer> interval, @NonNull WildcardIntervalType type) {
+public record WildcardInterval(List<RangeNode> intervals, @NonNull WildcardIntervalType type) {
 
   public WildcardInterval {
-    Objects.requireNonNull(interval, "property :interval is required");
+    Objects.requireNonNull(intervals, "property :intervals is required");
     Objects.requireNonNull(type, "property :type is required");
   }
 
@@ -24,14 +23,14 @@ public record WildcardInterval(
   }
 
   public static final class Builder {
-    private Range<@NonNull Integer> interval;
+    private List<RangeNode> intervals;
 
     private WildcardIntervalType type;
 
     private Builder() {}
 
-    public Builder interval(Range<@NonNull Integer> interval) {
-      this.interval = Objects.requireNonNull(interval, "Null interval");
+    public Builder interval(List<RangeNode> intervals) {
+      this.intervals = Objects.requireNonNull(intervals, "Null intervals");
       return this;
     }
 
@@ -41,17 +40,17 @@ public record WildcardInterval(
     }
 
     public WildcardInterval build() {
-      if (this.interval == null || this.type == null) {
+      if (this.intervals == null || this.type == null) {
         StringBuilder missing = new StringBuilder();
-        if (this.interval == null) {
-          missing.append(" interval");
+        if (this.intervals == null) {
+          missing.append(" intervals");
         }
         if (this.type == null) {
           missing.append(" type");
         }
         throw new IllegalStateException("Missing required properties:" + missing);
       }
-      return new WildcardInterval(this.interval, this.type);
+      return new WildcardInterval(this.intervals, this.type);
     }
   }
 }

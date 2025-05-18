@@ -11,6 +11,7 @@ geldata = "0.4.0"
 jsr305 = "4.9.3"
 guava = "33.4.7-jre"
 truth = "1.4.4"
+apache-commons-lang3 = "3.17.0"
 
 [libraries]
 antlr-runtime = { module = "org.antlr:antlr4-runtime", version.ref = "antlr" }
@@ -32,6 +33,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
+apache-commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "apache-commons-lang3" }
 
 # Tools
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }

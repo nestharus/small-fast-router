@@ -44,6 +44,7 @@ mode VARNAME;
 mode QUANT;
   Q_INT     : [0-9]+ -> type(INTEGER) ;
   Q_COMMA   : ','    -> type(COMMA) ;
+  Q_PIPE    : '|'    -> type(PIPE) ;
   Q_RBRACK  : ']'    -> popMode, type(RBRACK) ;
   Q_WS      : [ \t\r\n]+ -> skip ;
   QUANT_INVALID_VAR_CHAR   : . -> type(INVALID_VAR_CHAR) ;

@@ -1,54 +1,55 @@
 package org.nestharus.parser.mapper;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.nestharus.parser.RouteParser;
+import org.nestharus.parser.exception.TokenMapperException;
 import org.nestharus.parser.type.WildcardIntervalType;
-import org.nestharus.parser.value.ParserNode;
-import org.nestharus.parser.value.PatternNode;
-import org.nestharus.parser.value.WildcardInterval;
+import org.nestharus.parser.value.*;
 
 public class PatternNodeMapper {
   public static PatternNode fromStarPatternContext(
-      final RouteParser.StarPatternContext ctx, final List<ParserNode> children) {
-    final var isNegated = ctx.BANG() != null;
-    final var isOptional = ctx.QMARK() != null;
-    final var captureName = ctx.capture() != null ? ctx.capture().IDENTIFIER().getText() : null;
-    final var intervalType =
-        ctx.star().STAR() != null
-            ? WildcardIntervalType.SEGMENT_BOUND
-            : WildcardIntervalType.SEGMENT_UNBOUND;
+      final RouteParser.StarPatternContext ctx, final List<ParserNode> children)
+      throws TokenMapperException {
+    final var isNegatedToken = Optional.ofNullable(ctx.BANG()).map(TerminalNode::getSymbol);
+    final var isOptionalToken = Optional.ofNullable(ctx.QMARK()).map(TerminalNode::getSymbol);
+    final var captureNameToken =
+        Optional.ofNullable(ctx.capture()).map(token -> token.IDENTIFIER().getSymbol());
 
-    final var interval =
-        WildcardInterval.builder()
-            .type(intervalType)
-            .interval(RangeMapper.fromRangeContext(ctx.quantifier(), isOptional))
-            .build();
+    final var starNodeType = StarNodeMapper.typeFromParseRule(ctx.star());
+    final var intervalType = WildcardIntervalTypeMapper.fromStarNodeType(starNodeType);
+    final var isOptional = isOptionalToken.isPresent();
+    final var intervalRange = RangeMapper.fromRangeContext(ctx.quantifier(), isOptional, false);
 
     return PatternNode.builder()
-        .negated(isNegated)
-        .captureName(captureName)
-        .interval(interval)
+        .negated(BooleanNodeMapper.fromToken(isNegatedToken))
+        .captureName(StringNodeMapper.fromToken(captureNameToken))
+        .interval(WildcardInterval.builder().type(intervalType).interval(intervalRange).build())
         .children(children)
         .build();
   }
 
   public static PatternNode fromGroupExpressionContext(
-      final RouteParser.GroupExpressionContext ctx, final List<ParserNode> children) {
-    final var isNegated = ctx.BANG() != null;
-    final var isOptional = ctx.QMARK() != null;
-    final var captureName = ctx.capture() != null ? ctx.capture().IDENTIFIER().getText() : null;
+      final RouteParser.GroupExpressionContext ctx, final List<ParserNode> children)
+      throws TokenMapperException {
+    final var isNegatedToken = Optional.ofNullable(ctx.BANG()).map(TerminalNode::getSymbol);
+    final var isOptionalToken = Optional.ofNullable(ctx.QMARK()).map(TerminalNode::getSymbol);
+    final var captureNameToken =
+        Optional.ofNullable(ctx.capture()).map(token -> token.IDENTIFIER().getSymbol());
 
-    final var interval =
-        WildcardInterval.builder()
-            .interval(RangeMapper.fromRangeContext(null, isOptional))
-            .type(WildcardIntervalType.SEGMENT_BOUND)
-            .build();
+    final var isOptional = isOptionalToken.isPresent();
+    final var intervalRange = RangeMapper.fromRangeContext(null, isOptional, false);
 
     return PatternNode.builder()
-        .negated(isNegated)
-        .captureName(captureName)
-        .interval(interval)
+        .negated(BooleanNodeMapper.fromToken(isNegatedToken))
+        .captureName(StringNodeMapper.fromToken(captureNameToken))
+        .interval(
+            WildcardInterval.builder()
+                .interval(intervalRange)
+                .type(WildcardIntervalType.SEGMENT_BOUND)
+                .build())
         .children(children)
         .build();
   }

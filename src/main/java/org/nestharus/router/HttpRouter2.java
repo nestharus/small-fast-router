@@ -10,17 +10,17 @@ public class HttpRouter2<T extends HttpParameters> {
   }
 
   public static class StaticNode implements RouteNode {
-    final String text;
+    final String value;
     final boolean optional;
 
-    StaticNode(String text, boolean optional) {
-      this.text = text;
+    StaticNode(String value, boolean optional) {
+      this.value = value;
       this.optional = optional;
     }
 
     @Override
     public String toString() {
-      return text + (optional ? "?" : "");
+      return value + (optional ? "?" : "");
     }
   }
 
@@ -99,7 +99,7 @@ public class HttpRouter2<T extends HttpParameters> {
       public Void visitWildcard_segment(RouteParser.Wildcard_segmentContext ctx) {
         List<RouteParser.Static_segmentContext> staticSegments = ctx.static_segment();
 
-        // If there's static text before the wildcard, it's a prefix
+        // If there's static value before the wildcard, it's a prefix
         if (!staticSegments.isEmpty()
             && staticSegments.get(0).getStart().getStartIndex()
                 < ctx.wildcard().getStart().getStartIndex()) {
@@ -112,7 +112,7 @@ public class HttpRouter2<T extends HttpParameters> {
           nodes.add(new StarNode("", ctx.wildcard().OPTIONAL() != null));
         }
 
-        // If there's static text after the wildcard, it's a suffix
+        // If there's static value after the wildcard, it's a suffix
         if (!staticSegments.isEmpty()
             && staticSegments.get(0).getStart().getStartIndex()
                 > ctx.wildcard().getStop().getStopIndex()) {

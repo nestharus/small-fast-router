@@ -1,22 +1,39 @@
 package org.nestharus.parser.listener;
 
+import java.util.*;
+
+import org.antlr.v4.runtime.Token;
+import org.nestharus.parser.AstBuilderErrorHandler;
 import org.nestharus.parser.RouteParser;
 import org.nestharus.parser.RouteParserBaseListener;
 import org.nestharus.parser.mapper.PatternNodeMapper;
+import org.nestharus.parser.mapper.SourceNodeMapper;
 import org.nestharus.parser.mapper.TextNodeMapper;
 import org.nestharus.parser.mapper.WildcardNodeMapper;
 import org.nestharus.parser.value.*;
 
 public class RouteParserAstBuilderListener extends RouteParserBaseListener {
   private RootNode rootNode;
+  private IdentityHashMap<Object, List<Token>> tokenMap;
   private final ParserGroupContext groupContext;
+  private final AstBuilderErrorHandler errorHandler;
 
   public RouteParserAstBuilderListener() {
     groupContext = new ParserGroupContext();
+    errorHandler = new AstBuilderErrorHandler();
+    tokenMap = new IdentityHashMap<>();
+  }
+
+  public void addErrorListener(final SemanticErrorListener listener) {
+    errorHandler.addErrorListener(listener);
   }
 
   public RootNode getRootNode() {
     return rootNode;
+  }
+
+  public IdentityHashMap<Object, List<Token>> getTokenMap() {
+    return tokenMap;
   }
 
   @Override
@@ -36,10 +53,13 @@ public class RouteParserAstBuilderListener extends RouteParserBaseListener {
 
   @Override
   public void exitGroupExpression(final RouteParser.GroupExpressionContext ctx) {
-    final var children = groupContext.pop();
-    final var node = PatternNodeMapper.fromGroupExpressionContext(ctx, children);
+    errorHandler.handle(
+        () -> {
+          final var children = groupContext.pop();
+          final var node = PatternNodeMapper.fromGroupExpressionContext(ctx, children);
 
-    groupContext.add(node);
+          groupContext.add(node);
+        });
   }
 
   @Override
@@ -49,10 +69,13 @@ public class RouteParserAstBuilderListener extends RouteParserBaseListener {
 
   @Override
   public void exitStarPattern(final RouteParser.StarPatternContext ctx) {
-    final var children = groupContext.pop();
-    final var node = PatternNodeMapper.fromStarPatternContext(ctx, children);
+    errorHandler.handle(
+        () -> {
+          final var children = groupContext.pop();
+          final var node = PatternNodeMapper.fromStarPatternContext(ctx, children);
 
-    groupContext.add(node);
+          groupContext.add(node);
+        });
   }
 
   @Override
@@ -84,21 +107,29 @@ public class RouteParserAstBuilderListener extends RouteParserBaseListener {
 
   @Override
   public void enterTextExpression(final RouteParser.TextExpressionContext ctx) {
-    final var node = TextNodeMapper.fromTextExpressionContext(ctx);
+    errorHandler.handle(
+        () -> {
+          final var node = TextNodeMapper.fromTextExpressionContext(ctx);
 
-    groupContext.add(node);
+          groupContext.add(node);
+        });
   }
 
   @Override
   public void enterStarExpression(final RouteParser.StarExpressionContext ctx) {
-    final var node = WildcardNodeMapper.fromStarExpression(ctx);
+    errorHandler.handle(
+        () -> {
+          final var node = WildcardNodeMapper.fromStarExpression(ctx);
 
-    groupContext.add(node);
+          groupContext.add(node);
+        });
   }
 
   @Override
   public void enterSlash(final RouteParser.SlashContext ctx) {
-    final var node = new SlashNode();
+    final var token = ctx.SLASH().getSymbol();
+    final var source = SourceNodeMapper.fromToken(token);
+    final var node = new SlashNode(Optional.of(source));
 
     groupContext.add(node);
   }

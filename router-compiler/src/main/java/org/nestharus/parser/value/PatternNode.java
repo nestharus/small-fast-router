@@ -2,6 +2,7 @@ package org.nestharus.parser.value;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.collect.Range;
 import org.jspecify.annotations.NonNull;
@@ -10,18 +11,21 @@ import org.nestharus.parser.type.ParserNodeType;
 import org.nestharus.parser.type.WildcardIntervalType;
 
 public record PatternNode(
-    boolean negated,
-    @Nullable String captureName,
-    @Nullable WildcardInterval interval,
-    List<ParserNode> children)
+    @NonNull BooleanNode negated,
+    @NonNull Optional<StringNode> captureName,
+    @NonNull WildcardInterval interval,
+    @NonNull List<ParserNode> children)
     implements ParserNode, GroupNode<ParserNode>, CapturableNode {
   public PatternNode {
+    Objects.requireNonNull(negated, "property :negated is required");
+    Objects.requireNonNull(captureName, "property :captureName is required");
+    Objects.requireNonNull(interval, "property :interval is required");
     Objects.requireNonNull(children, "property :children is required");
   }
 
   @Override
   public boolean captured() {
-    return captureName != null && !captureName.isEmpty();
+    return captureName.isPresent();
   }
 
   @Override
@@ -39,29 +43,35 @@ public record PatternNode(
   }
 
   public static final class Builder {
-    private boolean negated;
+    private BooleanNode negated;
 
-    private String captureName;
+    private Optional<StringNode> captureName;
 
     private WildcardInterval interval;
 
     private List<ParserNode> children;
 
     private Builder() {
-      negated = false;
+      negated = new BooleanNode(false, Optional.empty());
       interval =
           WildcardInterval.builder()
-              .interval(Range.closed(1, 1))
+              .interval(
+                  List.of(
+                      RangeNode.builder()
+                          .value(Range.atLeast(1))
+                          .sourceNode(Optional.empty())
+                          .build()))
               .type(WildcardIntervalType.SEGMENT_BOUND)
               .build();
+      captureName = Optional.empty();
     }
 
-    public Builder negated(final boolean negated) {
+    public Builder negated(@NonNull final BooleanNode negated) {
       this.negated = negated;
       return this;
     }
 
-    public Builder captureName(@Nullable final String captureName) {
+    public Builder captureName(@NonNull final Optional<StringNode> captureName) {
       this.captureName = captureName;
       return this;
     }

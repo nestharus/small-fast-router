@@ -485,7 +485,7 @@ public class RouteFullParserTest {
         // def handler()
         "/hello/**?/hello",
 
-        // --- Wildcards (*) mixed with static text ---
+        // --- Wildcards (*) mixed with static value ---
 
         // Matches a path with the following segments
         // /path
@@ -900,8 +900,8 @@ public class RouteFullParserTest {
 
         // Matches a path that is either exactly "/" or exactly "/a".
         // The expression "/a<name>?" follows the `Constant<name>?` structure:
-        // - The constant static text "a" is made optional by the trailing '?'.
-        // Static text is always wrapped in an enum when captured.
+        // - The constant static value "a" is made optional by the trailing '?'.
+        // Static value is always wrapped in an enum when captured.
         //
         // Examples:
         // - Matches "/" (The optional "a" is absent; 'name' captures empty optional)
@@ -917,8 +917,8 @@ public class RouteFullParserTest {
 
         // Matches a path that is either exactly "/" or exactly "/aa".
         // The expression "/aa<name>?" follows the `Constant<name>?` structure:
-        // - The constant static text "aa" is made optional by the trailing '?'.
-        // Static text is always wrapped in an enum when captured.
+        // - The constant static value "aa" is made optional by the trailing '?'.
+        // Static value is always wrapped in an enum when captured.
         //
         // Examples:
         // - Matches "/" (The optional "aa" is absent; 'name' captures empty optional)
@@ -984,7 +984,7 @@ public class RouteFullParserTest {
         // def handler()
         "/!(a|b)(*)",
 
-        // static text with ! applied becomes dynamic and as such can be named
+        // static value with ! applied becomes dynamic and as such can be named
         // they are essentially wildcards
         // def handler(String name)
         "/!a<name>",
@@ -1304,7 +1304,7 @@ public class RouteFullParserTest {
         // Invalid: Multiple optional operators '??' after glob - only one is allowed
         "/**??",
 
-        // Invalid: Multiple optional operators '??' after static text - only one is allowed
+        // Invalid: Multiple optional operators '??' after static value - only one is allowed
         "/hello??",
 
         // Invalid: Unclosed group - missing closing parenthesis

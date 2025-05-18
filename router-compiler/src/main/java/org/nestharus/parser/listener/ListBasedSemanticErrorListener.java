@@ -15,17 +15,14 @@ public class ListBasedSemanticErrorListener implements SemanticErrorListener {
   private final List<String> errors = new ArrayList<>();
 
   @Override
-  public void reportSemanticError(String message, Token offendingToken) {
-    int line = offendingToken.getLine();
-    int charPositionInLine = offendingToken.getCharPositionInLine();
-    // Format matches ErrorTrackingListener: "Type Error at line L:C: message (near 'text')"
-    String formattedMessage =
+  public void reportSemanticError(final String message, final Token offendingToken) {
+    final int line = offendingToken.getLine();
+    final int charPositionInLine = offendingToken.getCharPositionInLine();
+    final String formattedMessage =
         String.format(
             "Semantic Error at line %d:%d: %s (near '%s')",
-            line,
-            charPositionInLine + 1, // User-friendly 1-based column
-            message,
-            offendingToken.getText());
+            line, charPositionInLine + 1, message, offendingToken.getText());
+
     errors.add(formattedMessage);
   }
 
