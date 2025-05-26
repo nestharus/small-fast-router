@@ -13,11 +13,6 @@ public record RangeNode(Range<@NonNull Integer> value, Optional<SourceNode> sour
     Objects.requireNonNull(sourceNode, "property :sourceNode is required");
   }
 
-  @Override
-  public String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
-
   public static Builder builder() {
     return new Builder();
   }

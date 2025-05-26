@@ -16,9 +16,4 @@ public record BranchNode(@NonNull List<ParserNode> children)
   public ParserNodeType type() {
     return ParserNodeType.BRANCH;
   }
-
-  @Override
-  public @NonNull String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
 }

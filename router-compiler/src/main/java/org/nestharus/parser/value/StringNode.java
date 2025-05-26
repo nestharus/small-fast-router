@@ -9,11 +9,6 @@ public record StringNode(String value, Optional<SourceNode> sourceNode) implemen
     Objects.requireNonNull(sourceNode, "property :sourceNode is required");
   }
 
-  @Override
-  public String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
-
   public static Builder builder() {
     return new Builder();
   }

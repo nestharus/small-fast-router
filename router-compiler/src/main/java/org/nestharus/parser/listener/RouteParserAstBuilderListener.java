@@ -2,7 +2,6 @@ package org.nestharus.parser.listener;
 
 import java.util.*;
 
-import org.antlr.v4.runtime.Token;
 import org.nestharus.parser.AstBuilderErrorHandler;
 import org.nestharus.parser.RouteParser;
 import org.nestharus.parser.RouteParserBaseListener;
@@ -14,14 +13,12 @@ import org.nestharus.parser.value.*;
 
 public class RouteParserAstBuilderListener extends RouteParserBaseListener {
   private RootNode rootNode;
-  private IdentityHashMap<Object, List<Token>> tokenMap;
   private final ParserGroupContext groupContext;
   private final AstBuilderErrorHandler errorHandler;
 
   public RouteParserAstBuilderListener() {
     groupContext = new ParserGroupContext();
     errorHandler = new AstBuilderErrorHandler();
-    tokenMap = new IdentityHashMap<>();
   }
 
   public void addErrorListener(final SemanticErrorListener listener) {
@@ -30,10 +27,6 @@ public class RouteParserAstBuilderListener extends RouteParserBaseListener {
 
   public RootNode getRootNode() {
     return rootNode;
-  }
-
-  public IdentityHashMap<Object, List<Token>> getTokenMap() {
-    return tokenMap;
   }
 
   @Override

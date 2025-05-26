@@ -13,11 +13,6 @@ public record WildcardInterval(List<RangeNode> intervals, @NonNull WildcardInter
     Objects.requireNonNull(type, "property :type is required");
   }
 
-  @Override
-  public @NonNull String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
-
   public static Builder builder() {
     return new Builder();
   }

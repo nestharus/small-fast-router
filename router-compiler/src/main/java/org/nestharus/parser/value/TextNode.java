@@ -32,11 +32,6 @@ public record TextNode(
     return ParserNodeType.TEXT;
   }
 
-  @Override
-  public @NonNull String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
-
   public static Builder builder() {
     return new Builder();
   }

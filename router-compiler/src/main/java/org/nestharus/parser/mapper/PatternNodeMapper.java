@@ -38,7 +38,7 @@ public class PatternNodeMapper {
     final var captureNameToken = OperatorExtractor.extractCaptureToken(context.capture());
 
     final var isOptional = isOptionalToken.isPresent();
-    final var intervalRange = RangeNodeMapper.fromRangeContext(null, isOptional, false);
+    final var intervalRange = RangeNodeMapper.fromRangeContext(null, isOptional, true);
 
     return PatternNode.builder()
         .negated(BooleanNodeMapper.fromToken(isNegatedToken))

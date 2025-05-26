@@ -22,11 +22,6 @@ public record WildcardNode(
     return ParserNodeType.WILDCARD;
   }
 
-  @Override
-  public @NonNull String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
-
   public static Builder builder() {
     return new Builder();
   }

@@ -7,11 +7,6 @@ public record SourceNode(int lineNumber, int columnNumber, String text) {
     Objects.requireNonNull(text, "property :text is required");
   }
 
-  @Override
-  public String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
-
   public static Builder builder() {
     return new Builder();
   }

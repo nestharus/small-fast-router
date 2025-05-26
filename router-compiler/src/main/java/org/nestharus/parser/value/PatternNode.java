@@ -33,11 +33,6 @@ public record PatternNode(
     return ParserNodeType.PATTERN;
   }
 
-  @Override
-  public @NonNull String toString() {
-    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this));
-  }
-
   public static Builder builder() {
     return new Builder();
   }
