@@ -7,10 +7,13 @@ import org.jspecify.annotations.NonNull;
 import org.nestharus.parser.type.ParserNodeType;
 
 public record WildcardNode(
-    @NonNull Optional<StringNode> captureName, @NonNull WildcardInterval interval)
+    @NonNull Optional<StringNode> captureName,
+    @NonNull WildcardInterval interval,
+    @NonNull Optional<SourceNode> sourceNode)
     implements ParserNode, CapturableNode {
   public WildcardNode {
     Objects.requireNonNull(interval, "property :interval is required");
+    Objects.requireNonNull(sourceNode, "property :sourceNode is required");
   }
 
   public boolean captured() {
@@ -28,8 +31,8 @@ public record WildcardNode(
 
   public static final class Builder {
     private Optional<StringNode> captureName;
-
     private WildcardInterval interval;
+    private Optional<SourceNode> sourceNode;
 
     private Builder() {}
 
@@ -43,11 +46,19 @@ public record WildcardNode(
       return this;
     }
 
+    public Builder sourceNode(@NonNull Optional<SourceNode> sourceNode) {
+      this.sourceNode = Objects.requireNonNull(sourceNode, "Null sourceNode");
+      return this;
+    }
+
     public WildcardNode build() {
       if (this.interval == null) {
         throw new IllegalStateException("Missing required properties:" + " interval");
       }
-      return new WildcardNode(this.captureName, this.interval);
+      if (this.sourceNode == null) {
+        throw new IllegalStateException("Missing required properties:" + " sourceNode");
+      }
+      return new WildcardNode(this.captureName, this.interval, this.sourceNode);
     }
   }
 }
