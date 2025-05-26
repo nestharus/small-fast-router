@@ -1,44 +1,23 @@
-# Small-Fast-Router Documentation
+ff# Small-Fast-Router Documentation
 
-This directory contains the documentation for the small-fast-router project, a high-performance HTTP router that leverages SIMD operations for efficient route matching.
+This directory contains the documentation for the small-fast-router project.
 
-## Available Documentation
+## Documentation
 
-### [Design Document](design-document.md)
-The design document outlines the technical architecture and design principles of the small-fast-router. It covers:
-- Core design principles
-- Route grammar and capabilities
-- Technical implementation details
-- Node structure and matching process
-- Performance considerations
-- Future enhancements
+### [Technical Design Document](technical-design.md)
+The consolidated technical design document covering:
+- The 13 compiler phases
+- How `**` is handled via forward/backward split
+- Matching algorithm
+- Handler scoring
+- Implementation status
 
-### [Current Status](current-status.md)
-The current status document provides an overview of the project's current state, including:
-- Implemented features
-- Current limitations
-- Test coverage
-- Project structure
-- Next steps
+### [Route DSL Specification](route-dsl-specification.md)
+Complete specification of the route pattern syntax based on the ANTLR4 grammar:
+- Syntax elements (static text, wildcards, captures, etc.)
+- Valid combinations and restrictions
+- Examples of valid and invalid patterns
 
-### [Project Plan](project-plan.md)
-The project plan outlines the implementation strategy and timeline for completing the small-fast-router, including:
-- Key components
-- Implementation phases
-- Tasks and deliverables
-- Timeline
-- Risks and mitigation strategies
+## Important Note
 
-## How to Use This Documentation
-
-- Start with the **Design Document** to understand the technical architecture and design principles
-- Review the **Current Status** to see what has been implemented and what is still needed
-- Refer to the **Project Plan** for the implementation strategy and timeline
-
-## Contributing to Documentation
-
-When updating or adding documentation:
-1. Place all documentation files in this directory
-2. Use Markdown format for consistency
-3. Update this README.md file to reflect any new documentation
-4. Keep documentation in sync with code changes
+The route grammar is defined by the ANTLR4 `.g4` files in `router-compiler/src/main/resources/grammar/`. Any syntax not in those files does not exist.

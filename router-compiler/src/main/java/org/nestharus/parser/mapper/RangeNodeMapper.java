@@ -14,16 +14,16 @@ import org.nestharus.parser.value.RangeNode;
 
 public class RangeNodeMapper {
   public static List<RangeNode> fromRangeContext(
-      final RouteParser.QuantifierContext ctx, final boolean isOptional, final boolean isStatic)
+      final RouteParser.QuantifierContext context, final boolean isOptional, final boolean isStatic)
       throws TokenMapperException {
     final List<RangeNode> ranges;
 
-    if (ctx == null) {
+    if (context == null) {
       ranges = List.of(fromRangeContextWithNoInterval(isStatic));
-    } else if (ctx.quantifierElement() != null) {
-      ranges = List.of(fromQuantifierElement(ctx.quantifierElement()));
-    } else if (ctx.quantifierBranchExpression() != null) {
-      ranges = fromQuantifierBranchExpression(ctx.quantifierBranchExpression());
+    } else if (context.quantifierElement() != null) {
+      ranges = List.of(fromQuantifierElement(context.quantifierElement()));
+    } else if (context.quantifierBranchExpression() != null) {
+      ranges = fromQuantifierBranchExpression(context.quantifierBranchExpression());
     } else {
       throw new RuntimeException("This should not happen");
     }
@@ -31,27 +31,27 @@ public class RangeNodeMapper {
     return rangesToOptional(ranges, isOptional);
   }
 
-  public static RangeNode fromQuantifierElement(final RouteParser.QuantifierElementContext ctx)
+  public static RangeNode fromQuantifierElement(final RouteParser.QuantifierElementContext context)
       throws TokenMapperException {
-    if (ctx.quantifierBoundedElement() != null) {
-      return fromBoundedInterval(ctx.quantifierBoundedElement());
+    if (context.quantifierBoundedElement() != null) {
+      return fromBoundedInterval(context.quantifierBoundedElement());
     }
 
-    if (ctx.quantifierSingleElement() != null) {
-      return fromSingletonInterval(ctx.quantifierSingleElement());
+    if (context.quantifierSingleElement() != null) {
+      return fromSingletonInterval(context.quantifierSingleElement());
     }
 
-    if (ctx.quantifierBoundedLowerElement() != null) {
-      return fromBoundedLowerInterval(ctx.quantifierBoundedLowerElement());
+    if (context.quantifierBoundedLowerElement() != null) {
+      return fromBoundedLowerInterval(context.quantifierBoundedLowerElement());
     }
 
-    return fromBoundedUpperInterval(ctx.quantifierBoundedUpperElement());
+    return fromBoundedUpperInterval(context.quantifierBoundedUpperElement());
   }
 
   public static List<RangeNode> fromQuantifierBranchExpression(
-      final RouteParser.QuantifierBranchExpressionContext ctx) throws TokenMapperException {
+      final RouteParser.QuantifierBranchExpressionContext context) throws TokenMapperException {
     try {
-      return ctx.quantifierElement().stream()
+      return context.quantifierElement().stream()
           .map(rule -> Failable.get(() -> RangeNodeMapper.fromQuantifierElement(rule)))
           .toList();
     } catch (final RuntimeException exception) {
@@ -67,10 +67,10 @@ public class RangeNodeMapper {
     return new RangeNode(Range.atLeast(1), Optional.empty());
   }
 
-  public static RangeNode fromBoundedInterval(final RouteParser.QuantifierBoundedElementContext ctx)
-      throws TokenMapperException {
-    final var leftToken = ctx.quantifierLeftElement().INTEGER().getSymbol();
-    final var rightToken = ctx.quantifierRightElement().INTEGER().getSymbol();
+  public static RangeNode fromBoundedInterval(
+      final RouteParser.QuantifierBoundedElementContext context) throws TokenMapperException {
+    final var leftToken = context.quantifierLeftElement().INTEGER().getSymbol();
+    final var rightToken = context.quantifierRightElement().INTEGER().getSymbol();
 
     final Range<@NonNull Integer> range;
     try {
@@ -85,8 +85,8 @@ public class RangeNodeMapper {
   }
 
   public static RangeNode fromSingletonInterval(
-      final RouteParser.QuantifierSingleElementContext ctx) throws TokenMapperException {
-    final var token = ctx.INTEGER().getSymbol();
+      final RouteParser.QuantifierSingleElementContext context) throws TokenMapperException {
+    final var token = context.INTEGER().getSymbol();
 
     final Range<@NonNull Integer> range;
     try {
@@ -99,8 +99,8 @@ public class RangeNodeMapper {
   }
 
   public static RangeNode fromBoundedUpperInterval(
-      final RouteParser.QuantifierBoundedUpperElementContext ctx) throws TokenMapperException {
-    final var token = ctx.INTEGER().getSymbol();
+      final RouteParser.QuantifierBoundedUpperElementContext context) throws TokenMapperException {
+    final var token = context.INTEGER().getSymbol();
 
     final Range<@NonNull Integer> range;
     try {
@@ -113,8 +113,8 @@ public class RangeNodeMapper {
   }
 
   public static RangeNode fromBoundedLowerInterval(
-      final RouteParser.QuantifierBoundedLowerElementContext ctx) throws TokenMapperException {
-    final var token = ctx.INTEGER().getSymbol();
+      final RouteParser.QuantifierBoundedLowerElementContext context) throws TokenMapperException {
+    final var token = context.INTEGER().getSymbol();
 
     final Range<@NonNull Integer> range;
     try {

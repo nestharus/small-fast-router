@@ -1,6 +1,8 @@
 allprojects {
     plugins.withId('antlr') {
         def srcPath = projectDir.toString() + '/build/generated/sources/antlr/main/java'
+        def outputPath = file(projectDir.toString() + '/build/generated/sources/antlr/main/java/org/nestharus/parser')
+        def grammarPath = file(projectDir.toString() + '/src/main/resources/grammar')
 
         project.afterEvaluate {
             sourceSets {
@@ -12,17 +14,21 @@ allprojects {
             }
         }
 
-        def outputPath = file(projectDir.toString() + '/build/generated/sources/antlr/main/java/org/nestharus/parser')
-        def grammarPath = file(projectDir.toString() + '/src/main/resources/grammar')
+        sourceSets {
+            main {
+                antlr {
+                    srcDirs = [grammarPath.absolutePath]
+                }
+            }
+        }
 
         generateGrammarSource {
             outputDirectory = outputPath
-            source = fileTree(dir: grammarPath.absolutePath, include: '*.g4')
             arguments = [
                     '-visitor',
                     '-listener',
                     '-package', 'org.nestharus.parser',
-                    '-lib', outputDirectory.absolutePath,
+                    '-lib', grammarPath.absolutePath,
                     '-o', outputDirectory.absolutePath,
                     '-Xexact-output-dir'
             ]

@@ -1,8 +1,5 @@
 package org.nestharus.parser.mapper;
 
-import java.util.Optional;
-
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.nestharus.parser.RouteParser;
 import org.nestharus.parser.exception.TokenMapperException;
 import org.nestharus.parser.type.WildcardIntervalType;
@@ -10,13 +7,12 @@ import org.nestharus.parser.value.TextNode;
 import org.nestharus.parser.value.WildcardInterval;
 
 public class TextNodeMapper {
-  public static TextNode fromTextExpressionContext(final RouteParser.TextExpressionContext ctx)
+  public static TextNode fromTextExpressionContext(final RouteParser.TextExpressionContext context)
       throws TokenMapperException {
-    final var isNegatedToken = Optional.ofNullable(ctx.BANG()).map(TerminalNode::getSymbol);
-    final var isOptionalToken = Optional.ofNullable(ctx.QMARK()).map(TerminalNode::getSymbol);
-    final var captureNameToken =
-        Optional.ofNullable(ctx.capture()).map(token -> token.IDENTIFIER().getSymbol());
-    final var textToken = ctx.STATIC_TEXT().getSymbol();
+    final var isNegatedToken = OperatorExtractor.extractNegationToken(context.prefix());
+    final var isOptionalToken = OperatorExtractor.extractOptionalToken(context.postfix());
+    final var captureNameToken = OperatorExtractor.extractCaptureToken(context.postfix());
+    final var textToken = context.STATIC_TEXT().getSymbol();
 
     final var isOptional = isOptionalToken.isPresent();
     final var intervalRange = RangeNodeMapper.fromRangeContext(null, isOptional, true);

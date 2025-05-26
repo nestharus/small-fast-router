@@ -37,54 +37,54 @@ public class RouteParserAstBuilderListener extends RouteParserBaseListener {
   }
 
   @Override
-  public void enterMain(final RouteParser.MainContext ctx) {
+  public void enterMain(final RouteParser.MainContext context) {
     groupContext.push();
   }
 
   @Override
-  public void exitMain(final RouteParser.MainContext ctx) {
+  public void exitMain(final RouteParser.MainContext context) {
     rootNode = new RootNode(groupContext.pop());
   }
 
   @Override
-  public void enterGroupExpression(final RouteParser.GroupExpressionContext ctx) {
+  public void enterGroupExpression(final RouteParser.GroupExpressionContext context) {
     groupContext.push();
   }
 
   @Override
-  public void exitGroupExpression(final RouteParser.GroupExpressionContext ctx) {
+  public void exitGroupExpression(final RouteParser.GroupExpressionContext context) {
     errorHandler.handle(
         () -> {
           final var children = groupContext.pop();
-          final var node = PatternNodeMapper.fromGroupExpressionContext(ctx, children);
+          final var node = PatternNodeMapper.fromGroupExpressionContext(context, children);
 
           groupContext.add(node);
         });
   }
 
   @Override
-  public void enterStarPattern(final RouteParser.StarPatternContext ctx) {
+  public void enterStarPattern(final RouteParser.StarPatternContext context) {
     groupContext.push();
   }
 
   @Override
-  public void exitStarPattern(final RouteParser.StarPatternContext ctx) {
+  public void exitStarPattern(final RouteParser.StarPatternContext context) {
     errorHandler.handle(
         () -> {
           final var children = groupContext.pop();
-          final var node = PatternNodeMapper.fromStarPatternContext(ctx, children);
+          final var node = PatternNodeMapper.fromStarPatternContext(context, children);
 
           groupContext.add(node);
         });
   }
 
   @Override
-  public void enterBranchExpression(final RouteParser.BranchExpressionContext ctx) {
+  public void enterBranchExpression(final RouteParser.BranchExpressionContext context) {
     groupContext.push();
   }
 
   @Override
-  public void exitBranchExpression(final RouteParser.BranchExpressionContext ctx) {
+  public void exitBranchExpression(final RouteParser.BranchExpressionContext context) {
     final var children = groupContext.pop();
     final var node =
         new BranchExpressionNode(children.stream().map(BranchNode.class::cast).toList());
@@ -93,12 +93,12 @@ public class RouteParserAstBuilderListener extends RouteParserBaseListener {
   }
 
   @Override
-  public void enterBranch(final RouteParser.BranchContext ctx) {
+  public void enterBranch(final RouteParser.BranchContext context) {
     groupContext.push();
   }
 
   @Override
-  public void exitBranch(final RouteParser.BranchContext ctx) {
+  public void exitBranch(final RouteParser.BranchContext context) {
     final var children = groupContext.pop();
     final var node = new BranchNode(children);
 
@@ -106,28 +106,28 @@ public class RouteParserAstBuilderListener extends RouteParserBaseListener {
   }
 
   @Override
-  public void enterTextExpression(final RouteParser.TextExpressionContext ctx) {
+  public void enterTextExpression(final RouteParser.TextExpressionContext context) {
     errorHandler.handle(
         () -> {
-          final var node = TextNodeMapper.fromTextExpressionContext(ctx);
+          final var node = TextNodeMapper.fromTextExpressionContext(context);
 
           groupContext.add(node);
         });
   }
 
   @Override
-  public void enterStarExpression(final RouteParser.StarExpressionContext ctx) {
+  public void enterStarExpression(final RouteParser.StarExpressionContext context) {
     errorHandler.handle(
         () -> {
-          final var node = WildcardNodeMapper.fromStarExpression(ctx);
+          final var node = WildcardNodeMapper.fromStarExpression(context);
 
           groupContext.add(node);
         });
   }
 
   @Override
-  public void enterSlash(final RouteParser.SlashContext ctx) {
-    final var token = ctx.SLASH().getSymbol();
+  public void enterSlash(final RouteParser.SlashContext context) {
+    final var token = context.SLASH().getSymbol();
     final var source = SourceNodeMapper.fromToken(token);
     final var node = new SlashNode(Optional.of(source));
 

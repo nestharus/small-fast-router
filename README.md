@@ -15,7 +15,7 @@ Small-Fast-Router is designed to provide:
 
 This project is currently in the proof-of-concept stage. The route parsing grammar is implemented and working, but the actual route matching logic using SIMD operations is still under development.
 
-See the [current status document](docs/current-status.md) for more details on implemented features and next steps.
+The project implements a compiler that transforms route patterns into DFAs/DAWGs. See the technical design document for details.
 
 ## Prerequisites
 
@@ -64,31 +64,14 @@ cd small-fast-router
 
 ## Documentation
 
-Detailed documentation is available in the `docs` directory:
-
-- [Design Document](docs/design-document.md): Technical architecture and design principles
-- [Current Status](docs/current-status.md): Current state of the project and next steps
-- [Project Plan](docs/project-plan.md): Implementation strategy and timeline
+See [Technical Design Document](docs/technical-design.md) for the complete compiler pipeline and implementation status.
 
 ## Features
 
 ### Route Pattern Support
 
-Small-Fast-Router supports a rich set of route patterns:
-
-- **Static segments**: `/users`, `/api/v1`
-- **Optional segments**: `/users?`, `/api/v1?`
-- **Single-segment wildcards**: `*`, `*{id}`, `files*.txt`
-- **Path wildcards**: `**`, `**{path}`, `**[*{type}, *{id}]`
-
-Example routes:
-
-```
-/api/users/*{id}/profile
-/api/**/settings
-/api/v1?/users/**[*{type}, *{id}?, *]/data
-/files?/*{filename}.txt
-```
+The route grammar is defined by the ANTLR4 `.g4` files in `router-compiler/src/main/resources/grammar/`. 
+See the test files for examples of supported syntax.
 
 ## Contributing
 

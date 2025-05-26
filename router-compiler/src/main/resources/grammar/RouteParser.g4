@@ -24,19 +24,29 @@ branchExpression
     ;
 
 textExpression
-    : BANG? STATIC_TEXT capture? QMARK?
+    : prefix* STATIC_TEXT postfix*
     ;
 
 groupExpression
-    : BANG? group capture? QMARK?
+    : prefix* group postfix*
     ;
 
 starPattern
-    : BANG? group star capture? quantifier? QMARK?
+    : prefix* group star postfix*
     ;
 
 starExpression
-    : star capture? quantifier? QMARK?
+    : star postfix*
+    ;
+
+prefix
+    : BANG
+    ;
+
+postfix
+    : capture
+    | quantifier
+    | QMARK
     ;
 
 group

@@ -29,7 +29,7 @@ public class AstBuilderErrorHandler {
       errorListeners.forEach(
           listener ->
               listener.reportSemanticError(
-                  tokenMapperException.getMessage(), tokenMapperException.getTokens().get(0)));
+                  tokenMapperException.getMessage(), tokenMapperException.getTokens().getFirst()));
 
       throw new AstBuildException();
     }
