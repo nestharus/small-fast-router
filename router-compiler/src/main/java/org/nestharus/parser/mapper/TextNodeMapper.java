@@ -9,9 +9,9 @@ import org.nestharus.parser.value.WildcardInterval;
 public class TextNodeMapper {
   public static TextNode fromTextExpressionContext(final RouteParser.TextExpressionContext context)
       throws TokenMapperException {
-    final var isNegatedToken = OperatorExtractor.extractNegationToken(context.prefix());
-    final var isOptionalToken = OperatorExtractor.extractOptionalToken(context.postfix());
-    final var captureNameToken = OperatorExtractor.extractCaptureToken(context.postfix());
+    final var isNegatedToken = OperatorExtractor.extractNegationToken(context.BANG());
+    final var isOptionalToken = OperatorExtractor.extractOptionalToken(context.QMARK());
+    final var captureNameToken = OperatorExtractor.extractCaptureToken(context.capture());
     final var textToken = context.STATIC_TEXT().getSymbol();
 
     final var isOptional = isOptionalToken.isPresent();

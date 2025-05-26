@@ -11,10 +11,10 @@ public class PatternNodeMapper {
   public static PatternNode fromStarPatternContext(
       final RouteParser.StarPatternContext context, final List<ParserNode> children)
       throws TokenMapperException {
-    final var isNegatedToken = OperatorExtractor.extractNegationToken(context.prefix());
-    final var isOptionalToken = OperatorExtractor.extractOptionalToken(context.postfix());
-    final var captureNameToken = OperatorExtractor.extractCaptureToken(context.postfix());
-    final var quantifierContext = OperatorExtractor.extractQuantifier(context.postfix());
+    final var isNegatedToken = OperatorExtractor.extractNegationToken(context.BANG());
+    final var isOptionalToken = OperatorExtractor.extractOptionalToken(context.QMARK());
+    final var captureNameToken = OperatorExtractor.extractCaptureToken(context.capture());
+    final var quantifierContext = OperatorExtractor.extractQuantifier(context.quantifier());
 
     final var starNodeType = StarNodeMapper.typeFromParseRule(context.star());
     final var intervalType = WildcardIntervalTypeMapper.fromStarNodeType(starNodeType);
@@ -33,9 +33,9 @@ public class PatternNodeMapper {
   public static PatternNode fromGroupExpressionContext(
       final RouteParser.GroupExpressionContext context, final List<ParserNode> children)
       throws TokenMapperException {
-    final var isNegatedToken = OperatorExtractor.extractNegationToken(context.prefix());
-    final var isOptionalToken = OperatorExtractor.extractOptionalToken(context.postfix());
-    final var captureNameToken = OperatorExtractor.extractCaptureToken(context.postfix());
+    final var isNegatedToken = OperatorExtractor.extractNegationToken(context.BANG());
+    final var isOptionalToken = OperatorExtractor.extractOptionalToken(context.QMARK());
+    final var captureNameToken = OperatorExtractor.extractCaptureToken(context.capture());
 
     final var isOptional = isOptionalToken.isPresent();
     final var intervalRange = RangeNodeMapper.fromRangeContext(null, isOptional, false);
